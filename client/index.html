@@ -1,1 +1,20 @@
-First Baby Steps Of Speed Online :) 
+<canvas id="speedGameCanvas" width="500" height="500"
+  style="border: 1px solid #000000;"></canvas>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+var socket = io();
+var speedGameCanvas = document.getElementById('speedGameCanvas').getContext("2d");
+
+speedGameCanvas.font = '30px Arial';
+
+socket.on('newPosition',function(data){
+  speedGameCanvas.clearRect(0,0,500,500);
+  for (var i = 0; i < data.length; i++)
+  {
+    speedGameCanvas.fillText(data[i].number,data[i].x, data[i].y);
+  }
+});
+</script>
