@@ -120,6 +120,43 @@ Player.update = function(){
   return pPack;
 }
 
+var Card = function(angle){
+  var self = Gamer();
+  self.id = Math.random();
+  self.spdX = Math.cos(angle/180*Math.PI) * 10;
+  self.spdY = Math.sin(angle/180*Math.PI) * 10;
+
+  self.timer = 0;
+  self.toRemove = false;
+
+  var superUpdate = self.update;
+  self.update = function(){
+    if (self.timer++ > 100)
+      self.toRemove = true;
+    superUpdate();
+  }
+  Card.list[self.id] = self;
+  return self;
+}
+Card.list = {};
+
+Card.update = function(){
+  if (Math.random() < 0.1) {
+    Card(Math.random()*360);
+  }
+
+  var cPack = [];
+
+  for (var i in Card.list) {
+    var inGameCard = Card.list[i];
+    inGameCard.update();
+    cPack.push({
+      x:inGameCard.x,
+      y:inGameCard.y,
+    });
+  }
+  return cPack;
+}
 //When a player connects they are assigned a random id and that player is then
 //added to the SOCKET_LIST. When a player disconnects it then removes them from
 //the SOCKET_LIST. A message to the server console is sent to confirm a new
@@ -136,7 +173,14 @@ io.sockets.on('connection', function(socket){
     delete SOCKET_LIST[socket.id];
     Player.onDisconnect(socket);
   })
-  console.log('A Ne Socket Connection Has Been Established!');
+
+  socket.on('sendMsgToServer', function(data){
+    var playerName = ("" + socket.id).slice(2,7);
+    for (var i in SOCKET_LIST){
+      SOCKET_LIST[i].emit('addToChat', playerName + ': ' + data);
+    }
+  });
+  console.log('A New Socket Connection Has Been Established!');
 });
 
 //Main loop of the game begins here - calls Player.update()
@@ -144,8 +188,10 @@ io.sockets.on('connection', function(socket){
 //all of the players positions for everyone by sending them to the clients and
 //updating their canavs.
 setInterval(function(){
-  var pack = Player.update();
-
+  var pack = {
+  player: Player.update(),
+  card: Card.update(),
+}
     for (var i in SOCKET_LIST) {
       var socket = SOCKET_LIST[i];
       socket.emit('newPosition', pack);

@@ -1,22 +1,49 @@
 <canvas id="speedGameCanvas" width="500" height="500"
   style="border: 1px solid #000000;"></canvas>
 
+<div id="chat-text" style="width: 500px; height: 100px; overflow-y:scroll">
+
+</div>
+
+<form id="chat-form">
+  <input id="chat-input" type="text" style="width: 500px"></input>
+</form>
+
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
 //Client
 var socket = io();
+var chatText = document.getElementById('chat-text');
+var chatInput = document.getElementById('chat-input');
+var chatForm = document.getElementById('chat-form');
 var speedGameCanvas = document.getElementById('speedGameCanvas').getContext("2d");
 
 speedGameCanvas.font = '30px Arial';
 
 socket.on('newPosition',function(data){
   speedGameCanvas.clearRect(0,0,500,500);
-  for (var i = 0; i < data.length; i++)
+  for (var i = 0; i < data.player.length; i++)
   {
-    speedGameCanvas.fillText(data[i].number,data[i].x, data[i].y);
+    speedGameCanvas.fillText(data.player[i].number,data.player[i].x, data.player[i].y);
+  }
+
+  for (var i = 0; i < data.card.length; i++)
+  {
+    speedGameCanvas.fillRect(data.card[i].x-5, data.card[i].y -5,10,10);
   }
 });
+
+socket.on('addToChat', function(data){
+    chatText.innerHTML += '<div>' + data + '</div>';
+    chatText.scrollTop = chatText.scrollHeight;
+});
+
+chatForm.onsubmit = function(e){
+    e.preventDefault();
+    socket.emit('sendMsgToServer', chatInput.value);
+    chatInput.value = '';
+}
 
 document.onkeydown = function(event){
   if (event.keyCode === 49) //1
