@@ -4,7 +4,7 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-
+//Client
 var socket = io();
 var speedGameCanvas = document.getElementById('speedGameCanvas').getContext("2d");
 
@@ -17,4 +17,27 @@ socket.on('newPosition',function(data){
     speedGameCanvas.fillText(data[i].number,data[i].x, data[i].y);
   }
 });
+
+document.onkeydown = function(event){
+  if (event.keyCode === 49) //1
+    socket.emit('keyPress',{inputId: 'deckPile1', state: true});
+  else if (event.keyCode === 50) //2
+    socket.emit('keyPress',{inputId: 'deckPile2', state: true});
+  else if (event.keyCode === 32) //SPACE
+    socket.emit('keyPress',{inputId: 'drawCard', state: true});
+  else if (event.keyCode === 13) //ENTER
+    socket.emit('keyPress',{inputId: 'turnOver', state: true});
+}
+
+document.onkeyup = function(event){
+  if (event.keyCode === 49) //1
+    socket.emit('keyPress',{inputId: 'deckPile1', state: false});
+  else if (event.keyCode === 50) //2
+    socket.emit('keyPress',{inputId: 'deckPile2', state: false});
+  else if (event.keyCode === 32) //SPACE
+    socket.emit('keyPress',{inputId: 'drawCard', state: false});
+  else if (event.keyCode === 13) //ENTER
+    socket.emit('keyPress',{inputId: 'turnOver', state: false});
+}
+
 </script>
