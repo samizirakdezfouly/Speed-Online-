@@ -86,6 +86,7 @@ var Player = function(id){
 Player.list = {};
 Player.onConnect = function(socket){
   var connectedPlayer = Player(socket.id);
+
   socket.on('keyPress', function(data){
     if(data.inputId === 'deckPile1')
       connectedPlayer.pressingOne = data.state;
@@ -96,6 +97,7 @@ Player.onConnect = function(socket){
     else if (data.inputId === 'turnOver')
       connectedPlayer.pressingEnter = data.state;
   });
+  console.log('A New Player Connection Has Been Established!');
 }
 
 //Removes players who leave the browser/game form the playerlist.
@@ -157,6 +159,17 @@ Card.update = function(){
   }
   return cPack;
 }
+
+//username:Password
+var USERS = {
+  "gametester001": "gt1",
+  "gametester002": "gt2",
+}
+
+var isValidPassword = function(data){
+  return USERS[data.username] === data.password;
+}
+
 //When a player connects they are assigned a random id and that player is then
 //added to the SOCKET_LIST. When a player disconnects it then removes them from
 //the SOCKET_LIST. A message to the server console is sent to confirm a new
@@ -167,12 +180,19 @@ io.sockets.on('connection', function(socket){
   socket.id = Math.random();
   SOCKET_LIST[socket.id] = socket;
 
-  Player.onConnect(socket);
+  socket.on('signIn', function(data){
+    if (isValidPassword(data)) {
+      Player.onConnect(socket);
+      socket.emit('signInResponse', {sucess:true});
+    } else {
+      socket.emit('signInResponse', {sucess:false});
+    }
+  });
 
   socket.on('disconnect', function(){
     delete SOCKET_LIST[socket.id];
     Player.onDisconnect(socket);
-  })
+  });
 
   socket.on('sendMsgToServer', function(data){
     var playerName = ("" + socket.id).slice(2,7);
@@ -180,7 +200,7 @@ io.sockets.on('connection', function(socket){
       SOCKET_LIST[i].emit('addToChat', playerName + ': ' + data);
     }
   });
-  console.log('A New Socket Connection Has Been Established!');
+//Old socket connection spot
 });
 
 //Main loop of the game begins here - calls Player.update()

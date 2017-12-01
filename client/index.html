@@ -1,19 +1,51 @@
-<canvas id="speedGameCanvas" width="500" height="500"
-  style="border: 1px solid #000000;"></canvas>
 
-<div id="chat-text" style="width: 500px; height: 100px; overflow-y:scroll">
-
+<div id="signDiv">
+  Username: <input id="signDiv-username" type="text"></input><br>
+  Password: <input id="signDiv-password" type="password"></input><br>
+  <button id="signDiv-signIn">Sign In</button>
+  <button id="signDiv-signUp">Sign Up</button>
 </div>
 
-<form id="chat-form">
-  <input id="chat-input" type="text" style="width: 500px"></input>
-</form>
+<div id="gameDiv" style="display:none;">
+  <canvas id="speedGameCanvas" width="500" height="500"
+    style="border: 1px solid #000000;"></canvas>
+
+  <div id="chat-text" style="width: 500px; height: 100px; overflow-y:scroll">
+
+  </div>
+
+  <form id="chat-form">
+    <input id="chat-input" type="text" style="width: 500px"></input>
+  </form>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-//Client
 var socket = io();
+//Sign In
+var signDiv = document.getElementById('signDiv');
+var gameDiv = document.getElementById('gameDiv');
+var signDivUsername = document.getElementById('signDiv-username');
+var signDivPassword = document.getElementById('signDiv-password');
+var signDivSignIn = document.getElementById('signDiv-signIn');
+var signDivSignUp = document.getElementById('signDiv-signUp');
+
+signDivSignIn.onclick = function(){
+  socket.emit('signIn',{username: signDivUsername.value, password: signDivPassword.value});
+}
+
+socket.on('signInResponse', function(data){
+  if (data.sucess) {
+    signDiv.style.display = 'none';
+    gameDiv.style.display = 'inline-block';
+  } else {
+    alert("Sign In Unsuccessful");
+  }
+});
+
+//Game
+//Client
 var chatText = document.getElementById('chat-text');
 var chatInput = document.getElementById('chat-input');
 var chatForm = document.getElementById('chat-form');
