@@ -170,6 +170,14 @@ var isValidPassword = function(data){
   return USERS[data.username] === data.password;
 }
 
+var isUsernameTaken = function(data){
+  return USERS[data.username];
+}
+
+var addUser = function(data){
+  USERS[data.username] = data.password;
+}
+
 //When a player connects they are assigned a random id and that player is then
 //added to the SOCKET_LIST. When a player disconnects it then removes them from
 //the SOCKET_LIST. A message to the server console is sent to confirm a new
@@ -186,6 +194,15 @@ io.sockets.on('connection', function(socket){
       socket.emit('signInResponse', {sucess:true});
     } else {
       socket.emit('signInResponse', {sucess:false});
+    }
+  });
+
+  socket.on('signUp', function(data){
+    if (isUsernameTaken(data)) {
+      socket.emit('signUpResponse', {sucess:false});
+    } else {
+      addUser(data);
+      socket.emit('signUpResponse', {sucess:true});
     }
   });
 

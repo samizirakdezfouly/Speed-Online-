@@ -35,12 +35,24 @@ signDivSignIn.onclick = function(){
   socket.emit('signIn',{username: signDivUsername.value, password: signDivPassword.value});
 }
 
+signDivSignUp.onclick = function(){
+  socket.emit('signUp',{username: signDivUsername.value, password: signDivPassword.value});
+}
+
 socket.on('signInResponse', function(data){
   if (data.sucess) {
     signDiv.style.display = 'none';
     gameDiv.style.display = 'inline-block';
   } else {
     alert("Sign In Unsuccessful");
+  }
+});
+
+socket.on('signUpResponse', function(data){
+  if (data.sucess) {
+    alert("Sign Up Sucessful")
+  } else {
+    alert("Sign Up Unsuccessful");
   }
 });
 
