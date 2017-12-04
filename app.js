@@ -1,8 +1,9 @@
 //Confirmation that the server is up and running correctly
 console.log("'Speed Online!' is up and running");
 
+var mongojs = require("mongojs");
+var speedOnlineDb = mongojs('localhost:27017/SPEED_ONLINE',['accounts', 'skillLvls']);
 //Express
-
 var expressCom = require('express');
 var speedOnline = expressCom();
 var hostServer = require('http').Server(speedOnline);
@@ -166,16 +167,28 @@ var USERS = {
   "gametester002": "gt2",
 }
 
-var isValidPassword = function(data){
-  return USERS[data.username] === data.password;
+var isValidPassword = function(data, callback){
+  speedOnlineDb.accounts.find({username:data.username,password:data.password},function(err, res){
+    if (res.length > 0)
+      callback(true);
+    else
+      callback(false);
+  });
 }
 
-var isUsernameTaken = function(data){
-  return USERS[data.username];
+var isUsernameTaken = function(data, callback){
+  speedOnlineDb.accounts.find({username:data.username},function(err, res){
+    if (res.length > 0)
+      callback(true);
+    else
+      callback(false);
+  });
 }
 
-var addUser = function(data){
-  USERS[data.username] = data.password;
+var addUser = function(data, callback){
+  speedOnlineDb.accounts.insert({username:data.username, password:data.password},function(err){
+    callback();
+  });
 }
 
 //When a player connects they are assigned a random id and that player is then
@@ -188,22 +201,27 @@ io.sockets.on('connection', function(socket){
   socket.id = Math.random();
   SOCKET_LIST[socket.id] = socket;
 
-  socket.on('signIn', function(data){
-    if (isValidPassword(data)) {
-      Player.onConnect(socket);
-      socket.emit('signInResponse', {sucess:true});
-    } else {
-      socket.emit('signInResponse', {sucess:false});
-    }
+  socket.on('signIn',function(data){
+      isValidPassword(data,function(res){
+          if(res){
+              Player.onConnect(socket);
+              socket.emit('signInResponse',{success:true});
+          } else {
+              socket.emit('signInResponse',{success:false});
+          }
+      });
   });
 
-  socket.on('signUp', function(data){
-    if (isUsernameTaken(data)) {
-      socket.emit('signUpResponse', {sucess:false});
-    } else {
-      addUser(data);
-      socket.emit('signUpResponse', {sucess:true});
-    }
+  socket.on('signUp',function(data){
+      isUsernameTaken(data,function(res){
+          if(res){
+              socket.emit('signUpResponse',{success:false});
+          } else {
+              addUser(data,function(){
+                  socket.emit('signUpResponse',{success:true});
+              });
+          }
+      });
   });
 
   socket.on('disconnect', function(){
@@ -211,10 +229,10 @@ io.sockets.on('connection', function(socket){
     Player.onDisconnect(socket);
   });
 
-  socket.on('sendMsgToServer', function(data){
-    var playerName = ("" + socket.id).slice(2,7);
+  socket.on('sendMsgToServer', function(chatMessage, player){
+    var playerName = player;
     for (var i in SOCKET_LIST){
-      SOCKET_LIST[i].emit('addToChat', playerName + ': ' + data);
+      SOCKET_LIST[i].emit('addToChat', playerName + ': ' + chatMessage);
     }
   });
 //Old socket connection spot

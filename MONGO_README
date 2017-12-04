@@ -1,0 +1,33 @@
+QUICK DOUMENT MADE BY SAMI ZIRAK
+HOW TO USE MONGODB DATABASE
+
+speedOnline
+  accounts
+    {username:"gametester001",password:"gt001"}
+    {username:"gametester002",password:"gt002"}
+  skillLvls
+    {username:"gametester001",skillLvl:0}
+    {username:"gametester002", skillLvl:30}
+
+create database:
+  use SPEED_ONLINE --My Database
+
+create collection
+  db.createCollection("accounts"); - ACCOUNTS
+  db.createCollection("skillLvls"); - SKILLLVLS
+
+add document
+  db.accounts.insert({username:"gametester001",password:"gt001"});
+  db.accounts.insert({username:"gametester002",password:"gt002"});
+
+  db.skillLvls.insert({username:"gametester001",skillLvl:0});
+  db.skillLvls.insert({username:"gametester002", skillLvl:30});
+
+read document
+  db.accounts.find({username:"gametester003"}); --Find User
+
+  db.skillLvls.find({username:"gametester003"},{skillLvl:1}); -- Find Specific Values
+
+update document
+
+  db.skillLvls.update({username: "gametester001"}, {$set:{skillLvl:99}});

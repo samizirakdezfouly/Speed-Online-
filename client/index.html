@@ -23,6 +23,7 @@
 
 <script>
 var socket = io();
+var loggedInPlayerName;
 //Sign In
 var signDiv = document.getElementById('signDiv');
 var gameDiv = document.getElementById('gameDiv');
@@ -40,7 +41,8 @@ signDivSignUp.onclick = function(){
 }
 
 socket.on('signInResponse', function(data){
-  if (data.sucess) {
+  if (data.success) {
+    loggedInPlayerName = signDivUsername.value;
     signDiv.style.display = 'none';
     gameDiv.style.display = 'inline-block';
   } else {
@@ -49,7 +51,7 @@ socket.on('signInResponse', function(data){
 });
 
 socket.on('signUpResponse', function(data){
-  if (data.sucess) {
+  if (data.success) {
     alert("Sign Up Sucessful")
   } else {
     alert("Sign Up Unsuccessful");
@@ -85,7 +87,7 @@ socket.on('addToChat', function(data){
 
 chatForm.onsubmit = function(e){
     e.preventDefault();
-    socket.emit('sendMsgToServer', chatInput.value);
+    socket.emit('sendMsgToServer', chatInput.value, loggedInPlayerName);
     chatInput.value = '';
 }
 
