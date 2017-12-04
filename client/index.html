@@ -69,15 +69,10 @@ speedGameCanvas.font = '30px Arial';
 
 socket.on('newPosition',function(data){
   speedGameCanvas.clearRect(0,0,500,500);
-  for (var i = 0; i < data.player.length; i++)
-  {
-    speedGameCanvas.fillText(data.player[i].number,data.player[i].x, data.player[i].y);
-  }
-
-  for (var i = 0; i < data.card.length; i++)
-  {
-    speedGameCanvas.fillRect(data.card[i].x-5, data.card[i].y -5,10,10);
-  }
+   for (var i = 0; i < data.player.length; i++)
+   {
+     speedGameCanvas.fillText(data.player[i].number,data.player[i].x, data.player[i].y);
+   }
 });
 
 socket.on('addToChat', function(data){

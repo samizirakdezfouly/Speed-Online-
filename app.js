@@ -1,9 +1,9 @@
-//Confirmation that the server is up and running correctly
+//Confirmation that the server is up and running correctly//
 console.log("'Speed Online!' is up and running");
-
+//MongoDb Database Linking//
 var mongojs = require("mongojs");
 var speedOnlineDb = mongojs('localhost:27017/SPEED_ONLINE',['accounts', 'skillLvls']);
-//Express
+//Express//
 var expressCom = require('express');
 var speedOnline = expressCom();
 var hostServer = require('http').Server(speedOnline);
@@ -16,9 +16,8 @@ speedOnline.get('/',function(req,res)
 speedOnline.use('/client', expressCom.static(__dirname + '/client'));
 
 hostServer.listen(2000);
-
-
-//Socket.io
+//////////////////////////////////////////////////////////////////////
+//Socket.io//
 var SOCKET_LIST = {};
 
 //The basis from which a "Player" starts.
@@ -123,50 +122,104 @@ Player.update = function(){
   return pPack;
 }
 
-var Card = function(angle){
-  var self = Gamer();
-  self.id = Math.random();
-  self.spdX = Math.cos(angle/180*Math.PI) * 10;
-  self.spdY = Math.sin(angle/180*Math.PI) * 10;
+var cardDeck = function(){
 
-  self.timer = 0;
-  self.toRemove = false;
+  var mainDeck = [];
+  var cardsInDeck = [];
 
-  var superUpdate = self.update;
-  self.update = function(){
-    if (self.timer++ > 100)
-      self.toRemove = true;
-    superUpdate();
-  }
-  Card.list[self.id] = self;
-  return self;
-}
-Card.list = {};
+  function Card(suit, value){
+    this.suit = suit;
+    this.value = value;
+    this.suitName = (function(cardSuitName){
 
-Card.update = function(){
-  if (Math.random() < 0.1) {
-    Card(Math.random()*360);
+        var cardName = "";
+        switch (cardSuitName) {
+          case 1: cardName = "Spades";  break;
+          case 2: cardName = "Clubs";   break;
+          case 3: cardName = "Hearts";  break;
+          case 4: cardName = "Diamonds" break;
+        }
+      return cardName;
+    }(this.suit));
   }
 
-  var cPack = [];
+  this.cardType = (function(value){
+    var cardName = "";
+    switch (value) {
+      case 1: cardName = "Ace";    break;
+      case 2: cardName = "Two";    break;
+      case 3: cardName = "Three";  break;
+      case 4: cardName = "Four";   break;
+      case 5: cardName = "Five";   break;
+      case 6: cardName = "Six";    break;
+      case 7: cardName = "Seven";  break;
+      case 8: cardName = "Eight";  break;
+      case 9: cardName = "Nine";   break;
+      case 10: cardName = "Ten";   break;
+      case 11: cardName = "Jack";  break;
+      case 12: cardName = "Queen"; break;
+      case 13: cardName = "King";  break;
+    }
+    return cardName;
+  }(this.value));
+  this.cardSource = "" + this.cardType + " of " + this.suitName;
+  this.cardPicture = this.getCardPicture();
+}
 
-  for (var i in Card.list) {
-    var inGameCard = Card.list[i];
-    inGameCard.update();
-    cPack.push({
-      x:inGameCard.x,
-      y:inGameCard.y,
-    });
+Card.getCardPicture = function(){
+
+  var value = "";
+
+  switch(this.value){
+    case 1:  value = "ace";   break;
+    case 11: value = "jack";  break;
+    case 12: value = "queen"; break;
+    case 13: value = "king";  break;
+    default: value = self.value;
   }
-  return cPack;
+  return ".../client/img/card_deck/" + value + "_of_" + this.suit.toLowerCase() + ".png";
 }
 
-//username:Password
-var USERS = {
-  "gametester001": "gt1",
-  "gametester002": "gt2",
-}
+// var Card = function(angle){
+//   var self = Gamer();
+//   self.id = Math.random();
+//   self.spdX = Math.cos(angle/180*Math.PI) * 10;
+//   self.spdY = Math.sin(angle/180*Math.PI) * 10;
+//
+//   self.timer = 0;
+//   self.toRemove = false;
+//
+//   var superUpdate = self.update;
+//   self.update = function(){
+//     if (self.timer++ > 100)
+//       self.toRemove = true;
+//     superUpdate();
+//   }
+//   Card.list[self.id] = self;
+//   return self;
+// }
+// Card.list = {};
 
+// Card.update = function(){
+//   if (Math.random() < 0.1) {
+//     Card(Math.random()*360);
+//   }
+//
+//   var cPack = [];
+//
+//   for (var i in Card.list) {
+//     var inGameCard = Card.list[i];
+//     inGameCard.update();
+//     cPack.push({
+//       x:inGameCard.x,
+//       y:inGameCard.y,
+//     });
+//   }
+//   return cPack;
+// }
+
+//Checks to see that the user has inputed a valid password for the username
+//provided when logging in.
 var isValidPassword = function(data, callback){
   speedOnlineDb.accounts.find({username:data.username,password:data.password},function(err, res){
     if (res.length > 0)
@@ -176,6 +229,7 @@ var isValidPassword = function(data, callback){
   });
 }
 
+//Checks that on  signing up that the username isnt already taken.
 var isUsernameTaken = function(data, callback){
   speedOnlineDb.accounts.find({username:data.username},function(err, res){
     if (res.length > 0)
@@ -185,6 +239,7 @@ var isUsernameTaken = function(data, callback){
   });
 }
 
+//Inserts a new signed up users information into the Database.
 var addUser = function(data, callback){
   speedOnlineDb.accounts.insert({username:data.username, password:data.password},function(err){
     callback();
@@ -211,7 +266,6 @@ io.sockets.on('connection', function(socket){
           }
       });
   });
-
   socket.on('signUp',function(data){
       isUsernameTaken(data,function(res){
           if(res){
@@ -223,19 +277,16 @@ io.sockets.on('connection', function(socket){
           }
       });
   });
-
   socket.on('disconnect', function(){
     delete SOCKET_LIST[socket.id];
     Player.onDisconnect(socket);
   });
-
   socket.on('sendMsgToServer', function(chatMessage, player){
     var playerName = player;
     for (var i in SOCKET_LIST){
       SOCKET_LIST[i].emit('addToChat', playerName + ': ' + chatMessage);
     }
   });
-//Old socket connection spot
 });
 
 //Main loop of the game begins here - calls Player.update()
@@ -245,7 +296,7 @@ io.sockets.on('connection', function(socket){
 setInterval(function(){
   var pack = {
   player: Player.update(),
-  card: Card.update(),
+  //card: Card.update(),
 }
     for (var i in SOCKET_LIST) {
       var socket = SOCKET_LIST[i];
