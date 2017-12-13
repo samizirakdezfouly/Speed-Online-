@@ -7,7 +7,7 @@
 </div>
 
 <div id="gameDiv" style="display:none;">
-  <canvas id="speedGameCanvas" width="500" height="500"
+  <canvas id="speedGameCanvas" width="1280" height="720"
     style="border: 1px solid #000000;"></canvas>
 
   <div id="chat-text" style="width: 500px; height: 100px; overflow-y:scroll">
@@ -15,8 +15,11 @@
   </div>
 
   <form id="chat-form">
-    <input id="chat-input" type="text" style="width: 500px"></input>
+    <input id="chat-input" type="text" style="width: 500px"></input><br>
   </form>
+  <div>
+    <button id="startGame">Start Game!</button>
+  </div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -24,6 +27,7 @@
 <script>
 var socket = io();
 var loggedInPlayerName;
+
 //Sign In
 var signDiv = document.getElementById('signDiv');
 var gameDiv = document.getElementById('gameDiv');
@@ -64,11 +68,16 @@ var chatText = document.getElementById('chat-text');
 var chatInput = document.getElementById('chat-input');
 var chatForm = document.getElementById('chat-form');
 var speedGameCanvas = document.getElementById('speedGameCanvas').getContext("2d");
+var startGameButton = document.getElementById('startGame')
+
+startGameButton.addEventListener('click', function(){
+  socket.emit('gameStart',{startGame: true});
+});
 
 speedGameCanvas.font = '30px Arial';
 
 socket.on('newPosition',function(data){
-  speedGameCanvas.clearRect(0,0,500,500);
+  speedGameCanvas.clearRect(0,0,1280,720);
    for (var i = 0; i < data.player.length; i++)
    {
      speedGameCanvas.fillText(data.player[i].number,data.player[i].x, data.player[i].y);
@@ -85,6 +94,17 @@ chatForm.onsubmit = function(e){
     socket.emit('sendMsgToServer', chatInput.value, loggedInPlayerName);
     chatInput.value = '';
 }
+
+socket.on('deckCreated',function(data){
+    var cardImage = new Image();
+    speedGameCanvas.clearRect(0,0,1280,720);
+
+    for (var i = 0; i < 53; i++) {
+        cardImage.src = data.deck.mainDeck[i].cardPicture;
+
+        speedGameCanvas.drawImage(cardImage, i * 100, i * 100);
+    }
+});
 
 document.onkeydown = function(event){
   if (event.keyCode === 49) //1

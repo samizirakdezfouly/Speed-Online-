@@ -7,7 +7,9 @@ var speedOnlineDb = mongojs('localhost:27017/SPEED_ONLINE',['accounts', 'skillLv
 var expressCom = require('express');
 var speedOnline = expressCom();
 var hostServer = require('http').Server(speedOnline);
-
+var numPlayers = 0;
+var Deck;
+var mainDeck = [];
 speedOnline.get('/',function(req,res)
 {
   res.sendFile(__dirname + '/client/index.html');
@@ -103,6 +105,7 @@ Player.onConnect = function(socket){
 //Removes players who leave the browser/game form the playerlist.
 Player.onDisconnect = function(socket){
   delete Player.list[socket.id];
+  numPlayers--;
 }
 
 //When the main loop reaches the player.update it loops through all the players
@@ -122,9 +125,10 @@ Player.update = function(){
   return pPack;
 }
 
-var cardDeck = function(){
+//MAKING THE DECK//
 
-  var mainDeck = [];
+ cardDeck = function(){
+
   var cardsInDeck = [];
 
   function Card(suit, value){
@@ -137,11 +141,10 @@ var cardDeck = function(){
           case 1: cardName = "Spades";  break;
           case 2: cardName = "Clubs";   break;
           case 3: cardName = "Hearts";  break;
-          case 4: cardName = "Diamonds" break;
+          case 4: cardName = "Diamonds"; break;
         }
       return cardName;
     }(this.suit));
-  }
 
   this.cardType = (function(value){
     var cardName = "";
@@ -160,13 +163,16 @@ var cardDeck = function(){
       case 12: cardName = "Queen"; break;
       case 13: cardName = "King";  break;
     }
+
     return cardName;
+
   }(this.value));
   this.cardSource = "" + this.cardType + " of " + this.suitName;
+
   this.cardPicture = this.getCardPicture();
 }
 
-Card.getCardPicture = function(){
+Card.prototype.getCardPicture = function(){
 
   var value = "";
 
@@ -175,55 +181,79 @@ Card.getCardPicture = function(){
     case 11: value = "jack";  break;
     case 12: value = "queen"; break;
     case 13: value = "king";  break;
-    default: value = self.value;
+    default: value = this.value;
   }
-  return ".../client/img/card_deck/" + value + "_of_" + this.suit.toLowerCase() + ".png";
+  return "/client/img/card_deck/" + value + "_of_" + this.suit + ".png";
 }
 
-// var Card = function(angle){
-//   var self = Gamer();
-//   self.id = Math.random();
-//   self.spdX = Math.cos(angle/180*Math.PI) * 10;
-//   self.spdY = Math.sin(angle/180*Math.PI) * 10;
-//
-//   self.timer = 0;
-//   self.toRemove = false;
-//
-//   var superUpdate = self.update;
-//   self.update = function(){
-//     if (self.timer++ > 100)
-//       self.toRemove = true;
-//     superUpdate();
-//   }
-//   Card.list[self.id] = self;
-//   return self;
-// }
-// Card.list = {};
+var generateDeck = function(){
+  for (var count = 1; count < 14; count++){
+    for (var suit = 1; suit < 5; suit++) {
+      mainDeck[mainDeck.length] = new Card(suit, count);
+      console.log("" + mainDeck[mainDeck.length-1]);
+      console.log("Generated Card Was: " + mainDec[mainDeck.length - 1].cardType + " of " + mainDeck[mainDeck.length - 1].suitName);
+    }
+  }
+}
 
-// Card.update = function(){
-//   if (Math.random() < 0.1) {
-//     Card(Math.random()*360);
-//   }
-//
-//   var cPack = [];
-//
-//   for (var i in Card.list) {
-//     var inGameCard = Card.list[i];
-//     inGameCard.update();
-//     cPack.push({
-//       x:inGameCard.x,
-//       y:inGameCard.y,
-//     });
-//   }
-//   return cPack;
-// }
+var shuffleDeck = function(){
+  for (var i = 0; i < mainDeck.length; i++){
+    var randomCard = Math.floor(Math.random() * mainDeck.length)
+     tempCardSlot = mainDeck[i];
+     mainDeck[i] = mainDeck[randomCard];
+     mainDeck[randomCard] = tempCardSlot;
+  }
+  for (var z = 0; z < mainDeck.length; z++){
+    console.log("Shuffled Card Was: " + mainDeck[z].cardType + " of " + mainDeck[z].suitName);
+  }
+}
+var readyDeck = function (){
+  generateDeck();
+  shuffleDeck();
+}
+
+readyDeck();
+
+var drawCards = function(reqNum){
+  var requiredCards = [];
+
+  if (mainDeck.length !== 0 || mainDeck.length >= reqNum){
+      for (var j = 0; j < reqNum; j++){
+        var randomIndex = Math.ceil(Math.random() * mainDeck.length - 1);
+
+        if (mainDeck[randomIndex] !== 'undefined' && mainDeck[randomIndex].suit){
+            requiredCards[j] = mainDeck.pop();
+        }
+        else{
+          alert("Random Index is " + randomIndex);
+        }
+      }
+      return requiredCards;
+  }
+  else {
+    console.log('No Cards Left To Draw!');
+    }
+  }
+
+var getCards = function(numberOfCards){
+  return drawCards(numberOfCards);
+}
+
+var getCardsForPlayers = function(){
+
+  }
+
+} //Closing bracket for deck
 
 //Checks to see that the user has inputed a valid password for the username
 //provided when logging in.
 var isValidPassword = function(data, callback){
   speedOnlineDb.accounts.find({username:data.username,password:data.password},function(err, res){
-    if (res.length > 0)
+    if (res.length > 0 && numPlayers < 2)
+    {
       callback(true);
+      numPlayers++;
+    }
     else
       callback(false);
   });
@@ -266,6 +296,14 @@ io.sockets.on('connection', function(socket){
           }
       });
   });
+
+  socket.on('gameStart', function(data){
+    //for (var g = 0; g < gameDeck.mainDeck.length; g++)
+    Deck = new cardDeck();
+    console.log('YESSS!');
+    //socket.emit('deckCreated', {deck:Deck});
+  });
+
   socket.on('signUp',function(data){
       isUsernameTaken(data,function(res){
           if(res){
