@@ -129,7 +129,7 @@ Player.update = function(){
 
  cardDeck = function(){
 
-  var cardsInDeck = [];
+  //var cardsInDeck = [];
 
   function Card(suit, value){
     this.suit = suit;
@@ -138,10 +138,10 @@ Player.update = function(){
 
         var cardName = "";
         switch (cardSuitName) {
-          case 1: cardName = "Spades";  break;
-          case 2: cardName = "Clubs";   break;
-          case 3: cardName = "Hearts";  break;
-          case 4: cardName = "Diamonds"; break;
+          case 1: cardName = "spades";  break;
+          case 2: cardName = "clubs";   break;
+          case 3: cardName = "hearts";  break;
+          case 4: cardName = "diamonds"; break;
         }
       return cardName;
     }(this.suit));
@@ -174,7 +174,7 @@ Player.update = function(){
 
 Card.prototype.getCardPicture = function(){
 
-  var value = "";
+  var value = "".toLowerCase();
 
   switch(this.value){
     case 1:  value = "ace";   break;
@@ -183,7 +183,7 @@ Card.prototype.getCardPicture = function(){
     case 13: value = "king";  break;
     default: value = this.value;
   }
-  return "/client/img/card_deck/" + value + "_of_" + this.suit + ".png";
+  return "/client/img/card_deck/" + value + "_of_" + this.suitName + ".png";
 }
 
 var generateDeck = function(){
@@ -191,7 +191,7 @@ var generateDeck = function(){
     for (var suit = 1; suit < 5; suit++) {
       mainDeck[mainDeck.length] = new Card(suit, count);
       console.log("" + mainDeck[mainDeck.length-1]);
-      console.log("Generated Card Was: " + mainDec[mainDeck.length - 1].cardType + " of " + mainDeck[mainDeck.length - 1].suitName);
+      console.log("Generated Card Was: " + mainDeck[mainDeck.length - 1].cardType + " of " + mainDeck[mainDeck.length - 1].suitName);
     }
   }
 }
@@ -207,9 +207,18 @@ var shuffleDeck = function(){
     console.log("Shuffled Card Was: " + mainDeck[z].cardType + " of " + mainDeck[z].suitName);
   }
 }
+
+var testCardLocations = function(){
+  var location = "No Location";
+  for (var k = 0; k < mainDeck.length; k++) {
+    console.log("Card location = " + mainDeck[k].cardPicture);
+  }
+}
+
 var readyDeck = function (){
   generateDeck();
   shuffleDeck();
+  testCardLocations();
 }
 
 readyDeck();
@@ -298,10 +307,9 @@ io.sockets.on('connection', function(socket){
   });
 
   socket.on('gameStart', function(data){
-    //for (var g = 0; g < gameDeck.mainDeck.length; g++)
     Deck = new cardDeck();
     console.log('YESSS!');
-    //socket.emit('deckCreated', {deck:Deck});
+    socket.emit('deckCreated', {deck:mainDeck});
   });
 
   socket.on('signUp',function(data){

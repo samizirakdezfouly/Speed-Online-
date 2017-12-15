@@ -77,11 +77,11 @@ startGameButton.addEventListener('click', function(){
 speedGameCanvas.font = '30px Arial';
 
 socket.on('newPosition',function(data){
-  speedGameCanvas.clearRect(0,0,1280,720);
-   for (var i = 0; i < data.player.length; i++)
-   {
-     speedGameCanvas.fillText(data.player[i].number,data.player[i].x, data.player[i].y);
-   }
+  //speedGameCanvas.clearRect(0,0,1280,720);
+   //for (var i = 0; i < data.player.length; i++)
+   //{
+    // speedGameCanvas.fillText(data.player[i].number,data.player[i].x, data.player[i].y);
+   //}
 });
 
 socket.on('addToChat', function(data){
@@ -97,13 +97,12 @@ chatForm.onsubmit = function(e){
 
 socket.on('deckCreated',function(data){
     var cardImage = new Image();
-    speedGameCanvas.clearRect(0,0,1280,720);
-
-    for (var i = 0; i < 53; i++) {
-        cardImage.src = data.deck.mainDeck[i].cardPicture;
-
-        speedGameCanvas.drawImage(cardImage, i * 100, i * 100);
+    cardImage.onload = function(){
+      speedGameCanvas.clearRect(0,0,1280,720);
+      speedGameCanvas.drawImage(cardImage, 10, 10,250,363);
     }
+    cardImage.src = data.deck[0].cardPicture;
+    console.log("Card Image = " + cardImage.src);
 });
 
 document.onkeydown = function(event){
