@@ -91,15 +91,17 @@ socket.on('addToChat', function(data){
 
 chatForm.onsubmit = function(e){
     e.preventDefault();
-    socket.emit('sendMsgToServer', chatInput.value, loggedInPlayerName);
-    chatInput.value = '';
+    if (chatInput.value != "") {
+      socket.emit('sendMsgToServer', chatInput.value, loggedInPlayerName);
+      chatInput.value = '';
+    }  
 }
 
 socket.on('deckCreated',function(data){
     var cardImage = new Image();
     cardImage.onload = function(){
       speedGameCanvas.clearRect(0,0,1280,720);
-      speedGameCanvas.drawImage(cardImage, 10, 10,250,363);
+      speedGameCanvas.drawImage(cardImage, 10, 10,125,181.5);
     }
     cardImage.src = data.deck[0].cardPicture;
     console.log("Card Image = " + cardImage.src);

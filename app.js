@@ -22,71 +22,57 @@ hostServer.listen(2000);
 //Socket.io//
 var SOCKET_LIST = {};
 
-//The basis from which a "Player" starts.
-var Gamer = function(){
-  var self = {
-    x: 250,
-    y: 250,
-    spdX: 0,
-    spdY: 0,
-    id:"",
-  }
-  self.update = function(){
-    self.UpdatePosition();
-  }
-  self.UpdatePosition = function() {
-    self.x += self.spdX;
-    self.y += self.spdY;
-  }
-  return self;
-}
-
 //Player Function takes a "Gamer" and inherits its arrtibutes as well
 //as adding a few more of its own.
 var Player = function(id){
-  var self = Gamer();
-    self.id = id;
-    self.number = "" + Math.floor(10 * Math.random());
-    self.pressingSpace = false;
-    self.pressingEnter = false;
-    self.pressingOne = false;
-    self.pressingTwo = false;
-    self.maxSpd = 10;
+  var self = {
+    id: id,
+    number: "" + Math.floor(10 * Math.random()),
+    skillLvl: 0,
+    playerHand : hand,
+    pressingSpace : false,
+    pressingEnter : false,
+    pressingOne : false,
+    pressingTwo : false,
+  }
 
 //Updates the speed of the player as well as a calling the regular update
 //function.
-  var superUpdate = self.update;
   self.update = function(){
     self.UpdateSpeed();
-    superUpdate();
   }
 
 //This function continuously checks if any of the games inputs are being used
 //if they are then it has an outcome.
   self.UpdateSpeed = function(){
     if (self.pressingOne)
-      self.spdX = self.maxSpd;
+      console.log("Player Pressing One");
     else if (self.pressingTwo)
-      self.spdX = -self.maxSpd;
-    else
-      self.spdX = 0;
-
+      console.log("Player Pressing Two");
     if (self.pressingSpace)
-      self.spdY = -self.maxSpd;
+      console.log("Player Pressing Space");
     else if (self.pressingEnter)
-      self.spdY = self.maxSpd;
-    else
-      self.spdY = 0;
+      console.log("Player Pressing Enter");
   }
   Player.list[id] = self;
   return self;
 }
 
+Player.list = {};
+
+var hand = {
+  cardOne : "",
+  cardTwo : "",
+  cardThree : "",
+  cardFour : "",
+  cardPile : "",
+}
+
 //Acts as a listener, when the client uses a keypress it sends a data package
 //to the server (this) and changes values within "UpdateSpeed" depending on
 //the keypress.
-Player.list = {};
 Player.onConnect = function(socket){
+
   var connectedPlayer = Player(socket.id);
 
   socket.on('keyPress', function(data){
@@ -117,10 +103,9 @@ Player.update = function(){
     var inGamePlayer = Player.list[i];
     inGamePlayer.update();
     pPack.push({
-      x:inGamePlayer.x,
-      y:inGamePlayer.y,
       number: inGamePlayer.number
     });
+    //console.log("Player Pack Pushed");
   }
   return pPack;
 }
@@ -261,7 +246,10 @@ var isValidPassword = function(data, callback){
     if (res.length > 0 && numPlayers < 2)
     {
       callback(true);
-      numPlayers++;
+      if (numPlayers < 0)
+        numPlayers = 1;
+      else
+        numPlayers = numPlayers + 1;      
     }
     else
       callback(false);
@@ -307,9 +295,14 @@ io.sockets.on('connection', function(socket){
   });
 
   socket.on('gameStart', function(data){
-    Deck = new cardDeck();
-    console.log('YESSS!');
-    socket.emit('deckCreated', {deck:mainDeck});
+    if (numPlayers == 2) {
+      Deck = new cardDeck();
+      console.log('YESSS!');
+      socket.emit('deckCreated', {deck:mainDeck});
+    }
+    else {
+      console.log("Not Enough Players Present To Start Game!" + " " + numPlayers);
+    }
   });
 
   socket.on('signUp',function(data){
