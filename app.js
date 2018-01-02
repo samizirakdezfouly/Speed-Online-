@@ -8,8 +8,15 @@ var expressCom = require('express');
 var speedOnline = expressCom();
 var hostServer = require('http').Server(speedOnline);
 var numPlayers = 0;
-var Deck;
+var generateDeck;
 var mainDeck = [];
+var playerOneHand = [];
+var playerTwoHand = [];
+var playerOneDeck = [];
+var playerTwoDeck = [];
+var sparePileOne = [];
+var sparePileTwo = [];
+
 speedOnline.get('/',function(req,res)
 {
   res.sendFile(__dirname + '/client/index.html');
@@ -29,7 +36,6 @@ var Player = function(id){
     id: id,
     number: "" + Math.floor(10 * Math.random()),
     skillLvl: 0,
-    playerHand : hand,
     pressingSpace : false,
     pressingEnter : false,
     pressingOne : false,
@@ -60,13 +66,6 @@ var Player = function(id){
 
 Player.list = {};
 
-var hand = {
-  cardOne : "",
-  cardTwo : "",
-  cardThree : "",
-  cardFour : "",
-  cardPile : "",
-}
 
 //Acts as a listener, when the client uses a keypress it sends a data package
 //to the server (this) and changes values within "UpdateSpeed" depending on
@@ -155,6 +154,7 @@ Player.update = function(){
   this.cardSource = "" + this.cardType + " of " + this.suitName;
 
   this.cardPicture = this.getCardPicture();
+  this.cardBackground = "/client/img/card_deck/card_back.png";
 }
 
 Card.prototype.getCardPicture = function(){
@@ -200,42 +200,59 @@ var testCardLocations = function(){
   }
 }
 
-var readyDeck = function (){
-  generateDeck();
-  shuffleDeck();
-  testCardLocations();
-}
-
-readyDeck();
-
 var drawCards = function(reqNum){
-  var requiredCards = [];
+  var requiredCards;
 
   if (mainDeck.length !== 0 || mainDeck.length >= reqNum){
-      for (var j = 0; j < reqNum; j++){
         var randomIndex = Math.ceil(Math.random() * mainDeck.length - 1);
 
         if (mainDeck[randomIndex] !== 'undefined' && mainDeck[randomIndex].suit){
-            requiredCards[j] = mainDeck.pop();
+            requiredCards = mainDeck.pop();
         }
         else{
           alert("Random Index is " + randomIndex);
         }
-      }
       return requiredCards;
+      console.log(requiredCards.cardType);
   }
   else {
     console.log('No Cards Left To Draw!');
     }
   }
 
+var prepGame = function(){
+    for (var i = 0; i < 4; i++) {
+      playerOneHand[i] = drawCards(1);
+      playerTwoHand[i] = drawCards(1);
+      sparePileOne[i] = drawCards(1);
+      sparePileTwo[i] = drawCards(1);
+      //console.log("Player One's Card Number " + i + " is: " + playerOneHand[i].cardType + " of " + playerOneHand[i].suitName);
+      //console.log("Player Two's Card Number " + i + " is: " + playerTwoHand[i].cardType + " of " + playerTwoHand[i].suitName);
+      //console.log("sparePileOnes One's Card Number " + i + " is: " + sparePileOne[i].cardType + " of " + sparePileOne[i].suitName);
+      //console.log("sparePileTwos Card Number " + i + " is: " + sparePileTwo[i].cardType + " of " + sparePileTwo[i].suitName);
+      //console.log("Value = " + sparePileOne[i].value);
+    }
+
+    for (var i = 1; i < 15; i++) {
+      playerOneDeck[i] = drawCards(1);
+      playerTwoDeck[i] = drawCards(1);
+      console.log("Player One's Card DECK Number " + i + " is: " + playerOneDeck[i].cardType + " of " + playerOneDeck[i].suitName);
+      console.log("Player Two's Card DECK Number " + i + " is: " + playerTwoDeck[i].cardType + " of " + playerTwoDeck[i].suitName);
+    }
+}
+
+var readyDeck = function (){
+  generateDeck();
+  shuffleDeck();
+  testCardLocations();
+  prepGame();
+}
+
+readyDeck();
+
 var getCards = function(numberOfCards){
   return drawCards(numberOfCards);
 }
-
-var getCardsForPlayers = function(){
-
-  }
 
 } //Closing bracket for deck
 
@@ -249,7 +266,7 @@ var isValidPassword = function(data, callback){
       if (numPlayers < 0)
         numPlayers = 1;
       else
-        numPlayers = numPlayers + 1;      
+        numPlayers = numPlayers + 1;
     }
     else
       callback(false);
@@ -296,9 +313,8 @@ io.sockets.on('connection', function(socket){
 
   socket.on('gameStart', function(data){
     if (numPlayers == 2) {
-      Deck = new cardDeck();
-      console.log('YESSS!');
-      socket.emit('deckCreated', {deck:mainDeck});
+      generateDeck = new cardDeck();
+      socket.emit('deckCreated', {deck:mainDeck, pileOne: sparePileOne, pileTwo: sparePileTwo, pOneHand: playerOneHand, pTwoHand: playerTwoHand});
     }
     else {
       console.log("Not Enough Players Present To Start Game!" + " " + numPlayers);
