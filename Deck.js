@@ -180,4 +180,4 @@ cardDeck = function() {
     return drawCards(numberOfCards);
   }
 
-} //Closing bracket for deck
+}

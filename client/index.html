@@ -27,6 +27,9 @@
 <script>
 var socket = io();
 var loggedInPlayerName;
+var loggedInPlayerSkillLvl;
+var opponentName;
+var opponentSkillLvl;
 
 //Card Loader
 var loadCount = 0;
@@ -74,6 +77,10 @@ socket.on('signUpResponse', function(data){
   }
 });
 
+socket.on('getSkill', function(data){
+  loggedInPlayerSkillLvl = data.skillLvl;
+});
+
 //Game
 //Client
 var chatText = document.getElementById('chat-text');
@@ -86,7 +93,7 @@ startGameButton.addEventListener('click', function(){
   socket.emit('gameStart',{startGame: true});
 });
 
-speedGameCanvas.font = '30px Arial';
+speedGameCanvas.font = '20px Arial';
 
 socket.on('newPosition',function(data){
   //speedGameCanvas.clearRect(0,0,1280,720);
@@ -129,6 +136,9 @@ function loadImages(sources, callback) {
 }
 
 socket.on('deckCreated',function(data){
+speedGameCanvas.clearRect(0,0,1280,720);
+speedGameCanvas.fillText(loggedInPlayerName,20, 550);
+speedGameCanvas.fillText("Skill Level: " + loggedInPlayerSkillLvl, 20, 575);
 
   cardsPileOneImgs = {
     cardOne : data.pileOne[0].cardBackground,
