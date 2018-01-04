@@ -124,7 +124,7 @@ cardDeck = function() {
   var testCardLocations = function() {
     var location = "No Location";
     for (var k = 0; k < mainDeck.length; k++) {
-      //console.log("Card location = " + mainDeck[k].cardPicture);
+      console.log("Card location = " + mainDeck[k].cardPicture);
     }
   }
 
@@ -170,7 +170,7 @@ cardDeck = function() {
   var readyDeck = function() {
     generateDeck();
     shuffleDeck();
-    testCardLocations();
+    //testCardLocations();
     prepGame();
   }
 

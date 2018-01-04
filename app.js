@@ -12,6 +12,7 @@ var speedOnline = expressCom();
 var hostServer = require('http').Server(speedOnline);
 var numPlayers = 0;
 var generateDeck;
+var skillLvlHolder;
 mainDeck = [];
 playerOneHand = [];
 playerTwoHand = [];
@@ -38,7 +39,7 @@ var Player = function(id){
   var self = {
     id: id,
     number: "" + Math.floor(10 * Math.random()),
-    skillLvl: 0,
+    skillLvl: skillLvlHolder,
     pressingSpace : false,
     pressingEnter : false,
     pressingOne : false,
@@ -55,7 +56,7 @@ var Player = function(id){
 //if they are then it has an outcome.
   self.UpdateSpeed = function(){
     if (self.pressingOne)
-      console.log("Player Pressing One");
+      console.log("Player Pressing One" + self.skillLvl);
     else if (self.pressingTwo)
       console.log("Player Pressing Two");
     if (self.pressingSpace)
@@ -158,19 +159,20 @@ io.sockets.on('connection', function(socket){
   socket.on('signIn',function(data){
       isValidPassword(data,function(res){
           if(res){
+              findPlayerSkill(data,function(res){});
               Player.onConnect(socket);
               socket.emit('signInResponse',{success:true});
           } else {
               socket.emit('signInResponse',{success:false});
           }
       });
-      findPlayerSkill(data,function(res){});
   });
 
   var findPlayerSkill = function(data,callback){
     speedOnlineDb.skillLvls.find({username: data.username}, function(err, res){
       if (res.length > 0) {
         console.log(res[0].skillLvl);
+        skillLvlHolder = res[0].skillLvl;
         socket.emit('getSkill', {skillLvl: res[0].skillLvl});
       }
     });
