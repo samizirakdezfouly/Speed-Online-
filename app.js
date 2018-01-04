@@ -11,7 +11,7 @@ var expressCom = require('express');
 var speedOnline = expressCom();
 var hostServer = require('http').Server(speedOnline);
 var numPlayers = 0;
-var generateDeck;
+var generateDeck = new cardDeck();
 var skillLvlHolder;
 mainDeck = [];
 playerOneHand = [];
@@ -161,7 +161,8 @@ io.sockets.on('connection', function(socket){
           if(res){
               findPlayerSkill(data,function(res){});
               Player.onConnect(socket);
-              socket.emit('signInResponse',{success:true});
+              console.log(numPlayers);
+              socket.emit('signInResponse',{success:true, numberOfPlayers: numPlayers});
           } else {
               socket.emit('signInResponse',{success:false});
           }
@@ -180,9 +181,9 @@ io.sockets.on('connection', function(socket){
 
   socket.on('gameStart', function(data){
     if (numPlayers == 2) {
-      generateDeck = new cardDeck();
       for (var i in SOCKET_LIST){
-        SOCKET_LIST[i].emit('deckCreated', {deck:mainDeck, pileOne: sparePileOne, pileTwo: sparePileTwo, pOneHand: playerOneHand, pTwoHand: playerTwoHand});
+        SOCKET_LIST[i].emit('deckCreated', {pileOne: sparePileOne, pileTwo: sparePileTwo,
+          pOneHand: playerOneHand, pTwoHand: playerTwoHand});
       }
     }
     else {
