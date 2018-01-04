@@ -10,9 +10,6 @@ var speedOnlineDb = mongojs("mongodb://samizirak:speedonlinedb@ds147544.mlab.com
 var expressCom = require('express');
 var speedOnline = expressCom();
 var hostServer = require('http').Server(speedOnline);
-var numPlayers = 0;
-var generateDeck = new cardDeck();
-var skillLvlHolder;
 mainDeck = [];
 playerOneHand = [];
 playerTwoHand = [];
@@ -20,6 +17,9 @@ playerOneDeck = [];
 playerTwoDeck = [];
 sparePileOne = [];
 sparePileTwo = [];
+var numPlayers = 0;
+var generateDeck = new cardDeck();
+var skillLvlHolder;
 
 speedOnline.get('/',function(req,res)
 {
