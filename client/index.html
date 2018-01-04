@@ -94,6 +94,7 @@ startGameButton.addEventListener('click', function(){
 });
 
 speedGameCanvas.font = '20px Arial';
+speedGameCanvas.fillStyle = "white";
 
 socket.on('newPosition',function(data){
   //speedGameCanvas.clearRect(0,0,1280,720);
@@ -122,8 +123,6 @@ function loadGameBackground(){
 
   speedOnlineBackground.onload = function(){
     speedGameCanvas.drawImage(speedOnlineBackground, 0, 0);
-    speedGameCanvas.fillText(loggedInPlayerName,20, 550);
-    speedGameCanvas.fillText("Skill Level: " + loggedInPlayerSkillLvl, 20, 575);
   }
 }
 
@@ -147,6 +146,8 @@ function loadImages(sources, callback) {
 }
 
 function generateGameView(data){
+  speedGameCanvas.fillText(loggedInPlayerName,20, 550);
+  speedGameCanvas.fillText("Skill Level: " + loggedInPlayerSkillLvl, 20, 575);
     cardsPileOneImgs = {
       cardOne : data.pileOne[0].cardBackground,
       cardTwo : data.pileOne[1].cardBackground,
@@ -206,8 +207,7 @@ function generateGameView(data){
 }
 
 socket.on('deckCreated',function(data){
-  speedGameCanvas.clearRect(0,0,1280,720);
-  loadGameBackground();
+  //speedGameCanvas.clearRect(0,0,1280,720);
   generateGameView(data);
 });
 
@@ -232,5 +232,7 @@ document.onkeyup = function(event){
   else if (event.keyCode === 13) //ENTER
     socket.emit('keyPress',{inputId: 'turnOver', state: false});
 }
+
+loadGameBackground();
 
 </script>
