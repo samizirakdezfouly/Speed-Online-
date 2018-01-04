@@ -4,8 +4,8 @@ console.log("'Speed Online!' is up and running");
 require('./Deck');
 
 //MongoDb Database Linking//
-//var mongojs = require("mongojs");
-//var speedOnlineDb = mongojs('localhost:27017/SPEED_ONLINE',['accounts', 'skillLvls']);
+var mongojs = require("mongodb").mongoClient;
+var speedOnlineDb = "mongodb://<samizirak>:<speedonlinedb>@ds147544.mlab.com:47544/speedonline";
 //Express//
 var expressCom = require('express');
 var speedOnline = expressCom();
@@ -111,39 +111,39 @@ Player.update = function(){
   return pPack;
 }
 
-//Checks to see that the user has inputed a valid password for the username
-//provided when logging in.
-// var isValidPassword = function(data, callback){
-//   speedOnlineDb.accounts.find({username:data.username,password:data.password},function(err, res){
-//     if (res.length > 0 && numPlayers < 2)
-//     {
-//       callback(true);
-//       if (numPlayers < 0)
-//         numPlayers = 1;
-//       else
-//         numPlayers = numPlayers + 1;
-//     }
-//     else
-//       callback(false);
-//   });
-// }
-//
-// //Checks that on  signing up that the username isnt already taken.
-// var isUsernameTaken = function(data, callback){
-//   speedOnlineDb.accounts.find({username:data.username},function(err, res){
-//     if (res.length > 0)
-//       callback(true);
-//     else
-//       callback(false);
-//   });
-// }
-//
-// //Inserts a new signed up users information into the Database.
-// var addUser = function(data, callback){
-//   speedOnlineDb.accounts.insert({username:data.username, password:data.password},function(err){
-//     callback();
-//   });
-// }
+// Checks to see that the user has inputed a valid password for the username
+// provided when logging in.
+var isValidPassword = function(data, callback){
+  speedOnlineDb.accounts.find({username:data.username,password:data.password},function(err, res){
+    if (res.length > 0 && numPlayers < 2)
+    {
+      callback(true);
+      if (numPlayers < 0)
+        numPlayers = 1;
+      else
+        numPlayers = numPlayers + 1;
+    }
+    else
+      callback(false);
+  });
+}
+
+//Checks that on  signing up that the username isnt already taken.
+var isUsernameTaken = function(data, callback){
+  speedOnlineDb.accounts.find({username:data.username},function(err, res){
+    if (res.length > 0)
+      callback(true);
+    else
+      callback(false);
+  });
+}
+
+//Inserts a new signed up users information into the Database.
+var addUser = function(data, callback){
+  speedOnlineDb.accounts.insert({username:data.username, password:data.password},function(err){
+    callback();
+  });
+}
 
 //When a player connects they are assigned a random id and that player is then
 //added to the SOCKET_LIST. When a player disconnects it then removes them from
@@ -167,14 +167,14 @@ io.sockets.on('connection', function(socket){
       findPlayerSkill(data,function(res){});
   });
 
-  // var findPlayerSkill = function(data,callback){
-  //   speedOnlineDb.skillLvls.find({username: data.username}, function(err, res){
-  //     if (res.length > 0) {
-  //       console.log(res[0].skillLvl);
-  //       socket.emit('getSkill', {skillLvl: res[0].skillLvl});
-  //     }
-  //   });
-  // }
+  var findPlayerSkill = function(data,callback){
+    speedOnlineDb.skillLvls.find({username: data.username}, function(err, res){
+      if (res.length > 0) {
+        console.log(res[0].skillLvl);
+        socket.emit('getSkill', {skillLvl: res[0].skillLvl});
+      }
+    });
+  }
 
   socket.on('gameStart', function(data){
     if (numPlayers == 2) {
