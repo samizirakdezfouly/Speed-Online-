@@ -4,8 +4,8 @@ console.log("'Speed Online!' is up and running");
 require('./Deck');
 
 //MongoDb Database Linking//
-var mongojs = require("mongodb").mongoClient;
-var speedOnlineDb = "mongodb://<samizirak>:<speedonlinedb>@ds147544.mlab.com:47544/speedonline";
+var mongojs = require("mongojs");
+var speedOnlineDb = mongojs("mongodb://samizirak:speedonlinedb@ds147544.mlab.com:47544/speedonline", ["accounts", "skillLvls"]);
 //Express//
 var expressCom = require('express');
 var speedOnline = expressCom();
