@@ -334,9 +334,9 @@ function generateGameView(data){
 
 socket.on('deckCreated',function(data){
   //speedGameCanvas.clearRect(0,0,1280,720);
-  if(playerNum == 1)
+  if(playerNum == 0)
     firstPlayerPlayState(data);
-  if(playerNum == 2)
+  if(playerNum == 1)
     secondPlayerPlayState(data);
   //generateGameView(data);
 });
