@@ -116,6 +116,15 @@ chatForm.onsubmit = function(e){
     }
 }
 
+function loadGameBackground(){
+  speedOnlineBackground = new Image();
+  speedOnlineBackground.src = "/client/img/poker_table_felt.png";
+
+  speedOnlineBackground.onload = function{
+    speedGameCanvas.drawImage(speedOnlineBackground, 0, 0);
+  }
+}
+
 function loadImages(sources, callback) {
   var images = {};
   var loadedImages = 0;
@@ -137,6 +146,7 @@ function loadImages(sources, callback) {
 
 function generateGameView(data){
   speedGameCanvas.clearRect(0,0,1280,720);
+  loadGameBackground();
   speedGameCanvas.fillText(loggedInPlayerName,20, 550);
   speedGameCanvas.fillText("Skill Level: " + loggedInPlayerSkillLvl, 20, 575);
 

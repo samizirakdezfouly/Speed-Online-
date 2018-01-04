@@ -39,7 +39,7 @@ var Player = function(id){
   var self = {
     id: id,
     number: "" + Math.floor(10 * Math.random()),
-    skillLvl: skillLvlHolder,
+    //skillLvl: skillLvlHolder,
     pressingSpace : false,
     pressingEnter : false,
     pressingOne : false,
@@ -56,7 +56,7 @@ var Player = function(id){
 //if they are then it has an outcome.
   self.UpdateSpeed = function(){
     if (self.pressingOne)
-      console.log("Player Pressing One" + self.skillLvl);
+      console.log("Player Pressing One");
     else if (self.pressingTwo)
       console.log("Player Pressing Two");
     if (self.pressingSpace)
@@ -172,7 +172,7 @@ io.sockets.on('connection', function(socket){
     speedOnlineDb.skillLvls.find({username: data.username}, function(err, res){
       if (res.length > 0) {
         console.log(res[0].skillLvl);
-        skillLvlHolder = res[0].skillLvl;
+        //skillLvlHolder = res[0].skillLvl;
         socket.emit('getSkill', {skillLvl: res[0].skillLvl});
       }
     });
