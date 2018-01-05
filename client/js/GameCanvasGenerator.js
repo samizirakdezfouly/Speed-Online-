@@ -2,14 +2,14 @@ function firstPlayerPlayState(data) {
   speedGameCanvas.fillText(loggedInPlayerName, 20, 550);
   speedGameCanvas.fillText("Skill Level: " + loggedInPlayerSkillLvl, 20, 575);
 
-  cardsPileOneImgs = {
+  cardsPileOne = {
     cardOne: data.pileOne[0].cardBackground,
     cardTwo: data.pileOne[1].cardBackground,
     cardThree: data.pileOne[2].cardBackground,
     cardFour: data.pileOne[3].cardBackground
   };
 
-  cardsPileTwoImgs = {
+  cardsPileTwo = {
     cardOne: data.pileTwo[0].cardBackground,
     cardTwo: data.pileTwo[1].cardBackground,
     cardThree: data.pileTwo[2].cardBackground,
@@ -30,14 +30,14 @@ function firstPlayerPlayState(data) {
     handCardFour: data.pTwoHand[3].cardBackground
   };
 
-  loadImages(cardsPileOneImgs, function(images) {
+  loadImages(cardsPileOne, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 100, 269.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardTwo, 100, 279.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardThree, 100, 289.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardFour, 100, 299.25, 125, 181.5);
   });
 
-  loadImages(cardsPileTwoImgs, function(images) {
+  loadImages(cardsPileTwo, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 1055, 269.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardTwo, 1055, 279.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardThree, 1055, 289.25, 125, 181.5);

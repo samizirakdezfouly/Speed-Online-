@@ -2,6 +2,7 @@
 console.log("'Speed Online!' is up and running");
 
 require('./Deck');
+require('/SpeedRuleEngine');
 require('./client/js/GameCanvasGenerator');
 
 //MongoDb Database Linking//
@@ -34,8 +35,6 @@ hostServer.listen(process.env.PORT || 2000);
 //Socket.io//
 var SOCKET_LIST = {};
 
-//Player Function takes a "Gamer" and inherits its arrtibutes as well
-//as adding a few more of its own.
 var Player = function(id){
   var self = {
     id: id,
@@ -51,12 +50,12 @@ var Player = function(id){
 //Updates the speed of the player as well as a calling the regular update
 //function.
   self.update = function(){
-    self.UpdateSpeed();
+    self.UpdateCardPositions();
   }
 
 //This function continuously checks if any of the games inputs are being used
 //if they are then it has an outcome.
-  self.UpdateSpeed = function(){
+  self.UpdateCardPositions = function(){
     if (self.pressingOne)
       console.log("Player Pressing One");
     else if (self.pressingTwo)
@@ -73,7 +72,7 @@ var Player = function(id){
 Player.list = {};
 
 //Acts as a listener, when the client uses a keypress it sends a data package
-//to the server (this) and changes values within "UpdateSpeed" depending on
+//to the server (this) and changes values within "UpdateCardPositions" depending on
 //the keypress.
 Player.onConnect = function(socket){
 
@@ -185,7 +184,7 @@ io.sockets.on('connection', function(socket){
     if (numPlayers == 2) {
       for (var i in SOCKET_LIST){
         SOCKET_LIST[i].emit('deckCreated', {pileOne: sparePileOne, pileTwo: sparePileTwo,
-          pOneHand: playerOneHand, pTwoHand: playerTwoHand});
+          pOneHand: playerOneHand, pTwoHand: playerTwoHand, pOneDeck: playerOneDeck, pTwoDeck: playerTwoDeck});
       }
     }
     else {

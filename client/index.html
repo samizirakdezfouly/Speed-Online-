@@ -33,12 +33,19 @@ var opponentName;
 var opponentSkillLvl;
 
 //Card Loader
- cardsPileOneImgs = {};
- cardsPileTwoImgs = {};
+ cardsPileOne = {};
+ cardsPileTwo = {};
  playerOneCards = {};
  playerTwoCards = {};
- playerOneDeck = {};
- playerTwoDeck = {};
+
+ playerOneDeckArray = [];
+ playerTwoDeckArray = [];
+ cardsPileOneArray = [];
+ cardsPileTwoArray = [];
+ playerOneCardsArray = [];
+ playerTwoCardsArray = [];
+ cardsPileOneArray = [];
+ cardsPileTwoArray = [];
 var playerNum;
 
 
@@ -117,8 +124,26 @@ chatForm.onsubmit = function(e){
     }
 }
 
+function transferServerCardArrays(data){
+  playerOneDeckArray = Array.from(data.pOneDeck);
+  playerTwoDeckArray = Array.from(data.pTwoDeck);
+  playerOneCardsArray = Array.from(data.pOneHand);
+  playerTwoCardsArray = Array.from(data.pTwoHand);
+  cardsPileOneArray = Array.from(data.pileOne);
+  cardsPileTwoArray = Array.from(data.pileTwo);
+}
+
 socket.on('deckCreated',function(data){
   //speedGameCanvas.clearRect(0,0,1280,720);
+
+  transferServerCardArrays(data);
+
+  for(var i = 0; i < 14; i++)
+  {
+    console.log("PONE Card " + i + "Is: " + playerOneDeck[i].cardType + " of " + playerOneDeck[i].suitName);
+    console.log("PTWO Card " + i + "Is: " + playerTwoDeck[i].cardType + " of " + playerTwoDeck[i].suitName);
+  }
+
   if(playerNum == 0)
     firstPlayerPlayState(data);
   if(playerNum == 1)
