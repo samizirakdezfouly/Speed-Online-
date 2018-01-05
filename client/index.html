@@ -39,7 +39,7 @@ var opponentSkillLvl;
  playerTwoCards = {};
  playerOneDeck = {};
  playerTwoDeck = {};
- playerNum;
+var playerNum;
 
 
 //Sign In
@@ -86,8 +86,8 @@ socket.on('getSkill', function(data){
 var chatText = document.getElementById('chat-text');
 var chatInput = document.getElementById('chat-input');
 var chatForm = document.getElementById('chat-form');
-var speedGameCanvas = document.getElementById('speedGameCanvas').getContext("2d");
-var startGameButton = document.getElementById('startGame')
+speedGameCanvas = document.getElementById('speedGameCanvas').getContext("2d");
+startGameButton = document.getElementById('startGame');
 
 startGameButton.addEventListener('click', function(){
   socket.emit('gameStart',{startGame: true});
