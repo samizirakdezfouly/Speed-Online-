@@ -2,7 +2,7 @@
 console.log("'Speed Online!' is up and running");
 
 require('./Deck');
-require('/SpeedRuleEngine');
+require('./SpeedRuleEngine');
 require('./client/js/GameCanvasGenerator');
 
 //MongoDb Database Linking//
