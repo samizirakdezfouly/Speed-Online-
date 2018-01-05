@@ -159,7 +159,7 @@ cardDeck = function() {
       //console.log("Value = " + sparePileOne[i].value);
     }
 
-    for (var i = 0; i < 14; i++) {
+    for (var i = 0; i < 18; i++) {
       playerOneDeck[i] = drawCards(1);
       playerTwoDeck[i] = drawCards(1);
       //  console.log("Player One's Card DECK Number " + i + " is: " + playerOneDeck[i].cardType + " of " + playerOneDeck[i].suitName);
