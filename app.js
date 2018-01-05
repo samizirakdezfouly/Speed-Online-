@@ -2,6 +2,7 @@
 console.log("'Speed Online!' is up and running");
 
 require('./Deck');
+require('./client/js/GameCanvasGenerator');
 
 //MongoDb Database Linking//
 var mongojs = require("mongojs");
@@ -39,6 +40,7 @@ var Player = function(id){
   var self = {
     id: id,
     number: "" + Math.floor(10 * Math.random()),
+    username: "",
     //skillLvl: skillLvlHolder,
     pressingSpace : false,
     pressingEnter : false,
