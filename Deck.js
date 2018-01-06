@@ -176,8 +176,4 @@ cardDeck = function() {
 
   readyDeck();
 
-  var getCards = function(numberOfCards) {
-    return drawCards(numberOfCards);
-  }
-
 }

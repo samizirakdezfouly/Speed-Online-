@@ -33,20 +33,29 @@ var opponentName;
 var opponentSkillLvl;
 
 //Card Loader
- cardsPileOne = {};
- cardsPileTwo = {};
- playerOneCards = {};
- playerTwoCards = {};
+cardsPileOne = {};
+cardsPileTwo = {};
+playerOneCards = {};
+playerTwoCards = {};
 
- playerOneDeckArray = [];
- playerTwoDeckArray = [];
- cardsPileOneArray = [];
- cardsPileTwoArray = [];
- playerOneCardsArray = [];
- playerTwoCardsArray = [];
- cardsPileOneArray = [];
- cardsPileTwoArray = [];
+playerOneDeckArray = [];
+playerTwoDeckArray = [];
+cardsPileOneArray = [];
+cardsPileTwoArray = [];
+playerOneCardsArray = [];
+playerTwoCardsArray = [];
+cardsPileOneArray = [];
+cardsPileTwoArray = [];
 var playerNum;
+
+keyCombos = {
+  one : false,
+  two : false,
+  q : false,
+  w : false,
+  e : false,
+  r : false
+}
 
 
 //Sign In
@@ -137,11 +146,9 @@ socket.on('deckCreated',function(data){
   //speedGameCanvas.clearRect(0,0,1280,720);
 
   transferServerCardArrays(data);
-
-  for(var i = 0; i < 18; i++)
-  {
-    console.log("PONE Card " + i + "Is: " + playerOneDeckArray[i].cardType + " of " + playerOneDeckArray[i].suitName);
-    console.log("PTWO Card " + i + "Is: " + playerTwoDeckArray[i].cardType + " of " + playerTwoDeckArray[i].suitName);
+  for (var i = 0; i < playerOneCardsArray.length; i++) {
+    console.log("PONE Card " + i + " Is: " + playerOneCardsArray[i].cardType + " of " + playerOneCardsArray[i].suitName);
+    console.log("PTWO Card " + i + " Is: " + playerTwoCardsArray[i].cardType + " of " + playerTwoCardsArray[i].suitName);
   }
 
   if(playerNum == 0)
@@ -152,25 +159,62 @@ socket.on('deckCreated',function(data){
 });
 
 document.onkeydown = function(event){
-  if (event.keyCode === 49) //1
-    socket.emit('keyPress',{inputId: 'deckPile1', state: true});
-  else if (event.keyCode === 50) //2
-    socket.emit('keyPress',{inputId: 'deckPile2', state: true});
-  else if (event.keyCode === 32) //SPACE
-    socket.emit('keyPress',{inputId: 'drawCard', state: true});
-  else if (event.keyCode === 13) //ENTER
-    socket.emit('keyPress',{inputId: 'turnOver', state: true});
+  if (event.keyCode === 49){
+    keyCombos.one = true;
+    keyCombos.two = false;
+  } //1
+  else if (event.keyCode === 50){
+    keyCombos.one = false;
+    keyCombos.two = true;
+  } //2
+  else if (event.keyCode === 81){
+    keyCombos.q = true;
+    keyCombos.w = false;
+    keyCombos.e = false;
+    keyCombos.r = false;
+  } //Q
+  else if (event.keyCode === 87){
+    keyCombos.q = false;
+    keyCombos.w = true;
+    keyCombos.e = false;
+    keyCombos.r = false;
+  } //W
+  else if (event.keyCode === 69){
+    keyCombos.q = false;
+    keyCombos.w = false;
+    keyCombos.e = true;
+    keyCombos.r = false;
+  } //E
+  else if (event.keyCode === 82){
+    keyCombos.q = false;
+    keyCombos.w = false;
+    keyCombos.e = false;
+    keyCombos.r = true;
+  } //R
+  else if (event.keyCode === 13) {
+    if (keyCombos.one === true && keyCombos.q === true)
+      socket.emit('keyPress',{inputId: 'firstHandCardToPileOne', state: true});
+    else if (keyCombos.one === true && keyCombos.w === true)
+      socket.emit('keyPress',{inputId: 'secondHandCardToPileOne', state: true});
+    else if (keyCombos.one === true && keyCombos.e === true)
+      socket.emit('keyPress',{inputId: 'thirdHandCardToPileOne', state: true});
+    else if (keyCombos.one === true && keyCombos.r === true)
+      socket.emit('keyPress',{inputId: 'fourthHandCardToPileOne', state: true});
+
+    else if (keyCombos.two === true && keyCombos.q === true)
+      socket.emit('keyPress',{inputId: 'firstHandCardToPileTwo', state: true});
+    else if (keyCombos.two === true && keyCombos.w === true)
+      socket.emit('keyPress',{inputId: 'secondHandCardToPileTwo', state: true});
+    else if (keyCombos.two === true && keyCombos.e === true)
+      socket.emit('keyPress',{inputId: 'thirdHandCardToPileTwo', state: true});
+    else if (keyCombos.two === true && keyCombos.r === true)
+      socket.emit('keyPress',{inputId: 'fourthHandCardToPileTwo', state: true});
+  } //ENTER
 }
 
 document.onkeyup = function(event){
-  if (event.keyCode === 49) //1
-    socket.emit('keyPress',{inputId: 'deckPile1', state: false});
-  else if (event.keyCode === 50) //2
-    socket.emit('keyPress',{inputId: 'deckPile2', state: false});
-  else if (event.keyCode === 32) //SPACE
-    socket.emit('keyPress',{inputId: 'drawCard', state: false});
-  else if (event.keyCode === 13) //ENTER
-    socket.emit('keyPress',{inputId: 'turnOver', state: false});
+  if (event.keyCode === 13) //ENTER
+    socket.emit('keyPress',{inputId: 'reset', state: false});
 }
 
 loadGameBackground();
