@@ -37,11 +37,13 @@ cardsPileOne = {};
 cardsPileTwo = {};
 playerOneCards = {};
 playerTwoCards = {};
+discardPileOne = {};
+discardPileTwo = {};
 
 playerOneDeckArray = [];
 playerTwoDeckArray = [];
-cardsPileOneArray = [];
-cardsPileTwoArray = [];
+spareCardsPileOneArray = [];
+spareCardsPileTwoArray = [];
 playerOneCardsArray = [];
 playerTwoCardsArray = [];
 cardsPileOneArray = [];
@@ -138,24 +140,25 @@ function transferServerCardArrays(data){
   playerTwoDeckArray = Array.from(data.pTwoDeck);
   playerOneCardsArray = Array.from(data.pOneHand);
   playerTwoCardsArray = Array.from(data.pTwoHand);
-  cardsPileOneArray = Array.from(data.pileOne);
-  cardsPileTwoArray = Array.from(data.pileTwo);
+  spareCardsPileOneArray = Array.from(data.pileOne);
+  spareCardsPileTwoArray = Array.from(data.pileTwo);
+  cardsPileOneArray = Array.from(data.cardPileO);
+  cardsPileTwoArray = Array.from(data.cardPileT);
 }
 
 socket.on('deckCreated',function(data){
   //speedGameCanvas.clearRect(0,0,1280,720);
 
   transferServerCardArrays(data);
-  for (var i = 0; i < playerOneCardsArray.length; i++) {
-    console.log("PONE Card " + i + " Is: " + playerOneCardsArray[i].cardType + " of " + playerOneCardsArray[i].suitName);
-    console.log("PTWO Card " + i + " Is: " + playerTwoCardsArray[i].cardType + " of " + playerTwoCardsArray[i].suitName);
-  }
+  // for (var i = 0; i < playerOneCardsArray.length; i++) {
+  //   console.log("PONE Card " + i + " Is: " + playerOneCardsArray[i].cardType + " of " + playerOneCardsArray[i].suitName);
+  //   console.log("PTWO Card " + i + " Is: " + playerTwoCardsArray[i].cardType + " of " + playerTwoCardsArray[i].suitName);
+  // }
 
   if(playerNum == 0)
     firstPlayerPlayState(data);
   if(playerNum == 1)
     secondPlayerPlayState(data);
-  //generateGameView(data);
 });
 
 document.onkeydown = function(event){
@@ -192,29 +195,73 @@ document.onkeydown = function(event){
     keyCombos.r = true;
   } //R
   else if (event.keyCode === 13) {
-    if (keyCombos.one === true && keyCombos.q === true)
-      socket.emit('keyPress',{inputId: 'firstHandCardToPileOne', state: true});
-    else if (keyCombos.one === true && keyCombos.w === true)
+    if (keyCombos.one === true && keyCombos.q === true){
+        socket.emit('keyPress',{inputId: 'firstHandCardToPileOne', state: true});
+        if(playerNum ==0)
+        checkCard(playerOneCardsArray[0], cardsPileOneArray);
+        if(playerNum ==1)
+        checkCard(playerTwoCardsArray[0], cardsPileOneArray);
+    }
+    else if (keyCombos.one === true && keyCombos.w === true){
       socket.emit('keyPress',{inputId: 'secondHandCardToPileOne', state: true});
-    else if (keyCombos.one === true && keyCombos.e === true)
+      if(playerNum ==0)
+      checkCard(playerOneCardsArray[1], cardsPileOneArray);
+      if(playerNum ==1)
+      checkCard(playerTwoCardsArray[1], cardsPileOneArray);
+    }
+    else if (keyCombos.one === true && keyCombos.e === true){
       socket.emit('keyPress',{inputId: 'thirdHandCardToPileOne', state: true});
-    else if (keyCombos.one === true && keyCombos.r === true)
+      if(playerNum ==0)
+      checkCard(playerOneCardsArray[2], cardsPileOneArray);
+      if(playerNum ==1)
+      checkCard(playerTwoCardsArray[2], cardsPileOneArray);
+    }
+    else if (keyCombos.one === true && keyCombos.r === true){
       socket.emit('keyPress',{inputId: 'fourthHandCardToPileOne', state: true});
+      if(playerNum ==0)
+      checkCard(playerOneCardsArray[3], cardsPileOneArray);
+      if(playerNum ==1)
+      checkCard(playerTwoCardsArray[3], cardsPileOneArray);
+    }
 
-    else if (keyCombos.two === true && keyCombos.q === true)
+    else if (keyCombos.two === true && keyCombos.q === true){
       socket.emit('keyPress',{inputId: 'firstHandCardToPileTwo', state: true});
-    else if (keyCombos.two === true && keyCombos.w === true)
+      if(playerNum ==0)
+      checkCard(playerOneCardsArray[0], cardsPileTwoArray);
+      if(playerNum ==1)
+      checkCard(playerTwoCardsArray[0], cardsPileTwoArray);
+    }
+    else if (keyCombos.two === true && keyCombos.w === true){
       socket.emit('keyPress',{inputId: 'secondHandCardToPileTwo', state: true});
-    else if (keyCombos.two === true && keyCombos.e === true)
+      if(playerNum ==0)
+      checkCard(playerOneCardsArray[1], cardsPileTwoArray);
+      if(playerNum ==1)
+      checkCard(playerTwoCardsArray[1], cardsPileTwoArray);
+    }
+    else if (keyCombos.two === true && keyCombos.e === true){
       socket.emit('keyPress',{inputId: 'thirdHandCardToPileTwo', state: true});
-    else if (keyCombos.two === true && keyCombos.r === true)
+      if(playerNum ==0)
+      checkCard(playerOneCardsArray[2], cardsPileTwoArray);
+      if(playerNum ==1)
+      checkCard(playerTwoCardsArray[2], cardsPileTwoArray);
+    }
+    else if (keyCombos.two === true && keyCombos.r === true){
       socket.emit('keyPress',{inputId: 'fourthHandCardToPileTwo', state: true});
-  } //ENTER
+      if(playerNum ==0)
+      checkCard(playerOneCardsArray[3], cardsPileTwoArray);
+      if(playerNum ==1)
+      checkCard(playerTwoCardsArray[3], cardsPileTwoArray);
+    }
+  }
 }
 
 document.onkeyup = function(event){
   if (event.keyCode === 13) //ENTER
     socket.emit('keyPress',{inputId: 'reset', state: false});
+}
+
+function checkCard(card, pile){
+  socket.emit('checkCard', {cardToCheck: card, requestedPile: pile});
 }
 
 loadGameBackground();

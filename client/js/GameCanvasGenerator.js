@@ -6,14 +6,14 @@ function firstPlayerPlayState(data) {
     cardOne: data.pileOne[0].cardBackground,
     cardTwo: data.pileOne[1].cardBackground,
     cardThree: data.pileOne[2].cardBackground,
-    cardFour: data.pileOne[3].cardBackground
+    //cardFour: data.pileOne[3].cardBackground
   };
 
   cardsPileTwo = {
     cardOne: data.pileTwo[0].cardBackground,
     cardTwo: data.pileTwo[1].cardBackground,
     cardThree: data.pileTwo[2].cardBackground,
-    cardFour: data.pileTwo[3].cardBackground
+    //cardFour: data.pileTwo[3].cardBackground
   };
 
   playerOneCards = {
@@ -30,18 +30,26 @@ function firstPlayerPlayState(data) {
     handCardFour: data.pTwoHand[3].cardBackground
   };
 
+  discardPileOne = {
+    zero : data.cardPileO[0].cardPicture
+  };
+
+  discardPileTwo = {
+    zero : data.cardPileT[0].cardPicture
+  };
+
   loadImages(cardsPileOne, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 100, 269.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardTwo, 100, 279.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardThree, 100, 289.25, 125, 181.5);
-    speedGameCanvas.drawImage(images.cardFour, 100, 299.25, 125, 181.5);
+    //speedGameCanvas.drawImage(images.cardFour, 100, 299.25, 125, 181.5);
   });
 
   loadImages(cardsPileTwo, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 1055, 269.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardTwo, 1055, 279.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardThree, 1055, 289.25, 125, 181.5);
-    speedGameCanvas.drawImage(images.cardFour, 1055, 299.25, 125, 181.5);
+    //speedGameCanvas.drawImage(images.cardFour, 1055, 299.25, 125, 181.5);
   });
 
   loadImages(playerOneCards, function(images) {
@@ -58,6 +66,15 @@ function firstPlayerPlayState(data) {
     speedGameCanvas.drawImage(images.handCardFour, 840, 8.5, 125, 181.5);
   });
 
+
+  loadImages(discardPileOne, function(images) {
+    speedGameCanvas.drawImage(images.zero, 460, 279, 125, 181.5);
+  });
+
+  loadImages(discardPileTwo, function(images) {
+    speedGameCanvas.drawImage(images.zero, 650, 279, 125, 181.5);
+  });
+
 }
 
 function secondPlayerPlayState(data) {
@@ -68,14 +85,14 @@ function secondPlayerPlayState(data) {
     cardOne: data.pileOne[0].cardBackground,
     cardTwo: data.pileOne[1].cardBackground,
     cardThree: data.pileOne[2].cardBackground,
-    cardFour: data.pileOne[3].cardBackground
+    //cardFour: data.pileOne[3].cardBackground
   };
 
   cardsPileTwoImgs = {
     cardOne: data.pileTwo[0].cardBackground,
     cardTwo: data.pileTwo[1].cardBackground,
     cardThree: data.pileTwo[2].cardBackground,
-    cardFour: data.pileTwo[3].cardBackground
+    //cardFour: data.pileTwo[3].cardBackground
   };
 
   playerOneCards = {
@@ -92,18 +109,26 @@ function secondPlayerPlayState(data) {
     handCardFour: data.pTwoHand[3].cardPicture
   };
 
+  discardPileOne = {
+    zero : data.cardPileO[0].cardPicture
+  };
+
+  discardPileTwo = {
+    zero: data.cardPileT[0].cardPicture
+  };
+
   loadImages(cardsPileOneImgs, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 100, 269.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardTwo, 100, 279.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardThree, 100, 289.25, 125, 181.5);
-    speedGameCanvas.drawImage(images.cardFour, 100, 299.25, 125, 181.5);
+    //speedGameCanvas.drawImage(images.cardFour, 100, 299.25, 125, 181.5);
   });
 
   loadImages(cardsPileTwoImgs, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 1055, 269.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardTwo, 1055, 279.25, 125, 181.5);
     speedGameCanvas.drawImage(images.cardThree, 1055, 289.25, 125, 181.5);
-    speedGameCanvas.drawImage(images.cardFour, 1055, 299.25, 125, 181.5);
+    //speedGameCanvas.drawImage(images.cardFour, 1055, 299.25, 125, 181.5);
   });
 
   loadImages(playerOneCards, function(images) {
@@ -118,6 +143,14 @@ function secondPlayerPlayState(data) {
     speedGameCanvas.drawImage(images.handCardTwo, 460, 530, 125, 181.5);
     speedGameCanvas.drawImage(images.handCardThree, 650, 530, 125, 181.5);
     speedGameCanvas.drawImage(images.handCardFour, 840, 530, 125, 181.5);
+  });
+
+  loadImages(discardPileOne, function(images) {
+    speedGameCanvas.drawImage(images.zero, 460, 279, 125, 181.5);
+  });
+
+  loadImages(discardPileTwo, function(images) {
+    speedGameCanvas.drawImage(images.zero, 650, 279, 125, 181.5);
   });
 
 }

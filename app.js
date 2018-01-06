@@ -1,8 +1,8 @@
 //Confirmation that the server is up and running correctly//
 console.log("'Speed Online!' is up and running");
 
-require('./Deck');
 require('./SpeedRuleEngine');
+require('./Deck');
 require('./client/js/GameCanvasGenerator');
 
 //MongoDb Database Linking//
@@ -19,6 +19,8 @@ playerOneDeck = [];
 playerTwoDeck = [];
 sparePileOne = [];
 sparePileTwo = [];
+cardPileOne = [];
+cardPileTwo = [];
 var numPlayers = 0;
 var generateDeck = new cardDeck();
 var skillLvlHolder;
@@ -33,7 +35,7 @@ speedOnline.use('/client', expressCom.static(__dirname + '/client'));
 hostServer.listen(process.env.PORT || 2000);
 //////////////////////////////////////////////////////////////////////
 //Socket.io//
-var SOCKET_LIST = {};
+SOCKET_LIST = {};
 
 var Player = function(id){
   var self = {
@@ -119,8 +121,6 @@ Player.onConnect = function(socket){
       connectedPlayer.pressingEAndTwo = data.state;
       connectedPlayer.pressingRAndTwo = data.state;
     }
-
-
   });
   console.log('A New Player Connection Has Been Established!');
 }
@@ -181,6 +181,29 @@ var addUser = function(data, callback){
   });
 }
 
+function flipSideDeckCard(cardPOne, cardPTwo, sparePileO, sparePileT) {
+
+  var cardOne;
+  var cardTwo;
+
+  if(cardPOne.length == 0 && cardPTwo.length == 0){
+    cardOne = sparePileO.pop();
+    cardTwo = sparePileT.pop();
+
+    cardPOne[0] = cardOne;
+    cardPTwo[0]= cardTwo;
+
+  }
+}
+
+function checkPlayedCard(chosenCard, chosenCardPile) {
+  if (chosenCardPile[chosenCardPile.length - 1].value + 1 == chosenCard.value || chosenCardPile[chosenCardPile.length - 1].value - 1 == chosenCard.value) {
+    console.log('You Can Play That Card!');
+  } else {
+    console.log('You Cant Play That Card!')
+  }
+}
+
 //When a player connects they are assigned a random id and that player is then
 //added to the SOCKET_LIST. When a player disconnects it then removes them from
 //the SOCKET_LIST. A message to the server console is sent to confirm a new
@@ -216,15 +239,20 @@ io.sockets.on('connection', function(socket){
 
   socket.on('gameStart', function(data){
     if (numPlayers == 2) {
+      flipSideDeckCard(cardPileOne, cardPileTwo, sparePileOne, sparePileTwo);
       for (var i in SOCKET_LIST){
         SOCKET_LIST[i].emit('deckCreated', {pileOne: sparePileOne, pileTwo: sparePileTwo,
-          pOneHand: playerOneHand, pTwoHand: playerTwoHand, pOneDeck: playerOneDeck, pTwoDeck: playerTwoDeck});
+          pOneHand: playerOneHand, pTwoHand: playerTwoHand, pOneDeck: playerOneDeck, pTwoDeck: playerTwoDeck, cardPileO: cardPileOne, cardPileT: cardPileTwo});
       }
     }
     else {
       console.log("Not Enough Players Present To Start Game!" + " " + numPlayers);
     }
   });
+
+  socket.on('checkCard', function(data){
+    checkPlayedCard(data.cardToCheck, data.requestedPile);
+  })
 
   socket.on('signUp',function(data){
       isUsernameTaken(data,function(res){
