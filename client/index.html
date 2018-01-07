@@ -18,7 +18,7 @@
     <input id="chat-input" type="text" style="width: 500px"></input><br>
   </form>
   <div>
-    <button id="startGame">Start Game!</button>
+    <button id="startGame">Start Game!</button> <button id="flipSideDeckBut">Flip Side Deck!</button>
   </div>
 </div>
 
@@ -106,20 +106,21 @@ var chatInput = document.getElementById('chat-input');
 var chatForm = document.getElementById('chat-form');
 speedGameCanvas = document.getElementById('speedGameCanvas').getContext("2d");
 startGameButton = document.getElementById('startGame');
+flipSideDeckButton = document.getElementById('flipSideDeckBut');
 
 startGameButton.addEventListener('click', function(){
   socket.emit('gameStart',{startGame: true});
+});
+
+flipSideDeckButton.addEventListener('click', function(){
+  socket.emit("checkIfStaleMate");
 });
 
 speedGameCanvas.font = '20px Arial';
 speedGameCanvas.fillStyle = "white";
 
 socket.on('newPosition',function(data){
-  //speedGameCanvas.clearRect(0,0,1280,720);
-   //for (var i = 0; i < data.player.length; i++)
-   //{
-    // speedGameCanvas.fillText(data.player[i].number,data.player[i].x, data.player[i].y);
-   //}
+
 });
 
 socket.on('addToChat', function(data){
@@ -152,14 +153,6 @@ socket.on('decksUpdated', function(data){
     firstPlayerPlayState(data);
   if(playerNum == 1)
     secondPlayerPlayState(data);
-  // console.log(playerOneCardsArray[0]);
-  // console.log(playerOneCardsArray[1]);
-  // console.log(playerOneCardsArray[2]);
-  // console.log(playerOneCardsArray[3]);
-  // console.log(playerTwoCardsArray[0]);
-  // console.log(playerTwoCardsArray[1]);
-  // console.log(playerTwoCardsArray[2]);
-  // console.log(playerTwoCardsArray[3]);
 });
 
 socket.on('deckCreated',function(data){
@@ -269,11 +262,6 @@ document.onkeyup = function(event){
     socket.emit('keyPress',{inputId: 'reset', state: false});
 }
 
-socket.on('playCardResponse', function(data){
-  var cardHolder;
-  speedGameCanvas.clearRect(data.cardX, data.cardY, 125, 181.5);
-  speedGameCanvas.clearRect(data.pileX, data.pileY, 125, 181.5);
-});
 
 function checkCard(card, pile, valOne, valTwo, playerNumber){
   socket.emit('checkCard', {cardToCheck: card, requestedPile: pile, valOne : valOne, valTwo : valTwo, playerNumber: playerNumber});

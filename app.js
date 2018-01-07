@@ -24,6 +24,7 @@ cardPileTwo = [];
 var numPlayers = 0;
 var generateDeck = new cardDeck();
 var skillLvlHolder;
+var beginChecks = false;
 
 speedOnline.get('/',function(req,res)
 {
@@ -181,21 +182,6 @@ var addUser = function(data, callback){
   });
 }
 
-function flipSideDeckCard(cardPOne, cardPTwo, sparePileO, sparePileT) {
-
-  var cardOne;
-  var cardTwo;
-
-  if(cardPOne.length == 0 && cardPTwo.length == 0){
-    cardOne = sparePileO.pop();
-    cardTwo = sparePileT.pop();
-
-    cardPOne[0] = cardOne;
-    cardPTwo[0]= cardTwo;
-
-  }
-}
-
 //When a player connects they are assigned a random id and that player is then
 //added to the SOCKET_LIST. When a player disconnects it then removes them from
 //the SOCKET_LIST. A message to the server console is sent to confirm a new
@@ -219,6 +205,57 @@ io.sockets.on('connection', function(socket){
       });
   });
 
+  socket.on("checkIfStaleMate", function(){
+    var count = 0;
+    var cardsToCheck = [
+      cardPileOne[0].value +1,
+      cardPileOne[0]. value -1,
+      cardPileTwo[0].value +1,
+      cardPileTwo[0].value -1
+    ];
+
+      for(var i = 0; i < cardsToCheck.length; i++){
+        if(cardsToCheck[i] != playerOneHand[0].value && cardsToCheck[i] != playerOneHand[1].value
+          && cardsToCheck[i] != playerOneHand[2].value && cardsToCheck[i] != playerOneHand[3].value){
+
+            if(cardsToCheck[i] != playerTwoHand[0].value && cardsToCheck[i] != playerTwoHand[1].value
+              && cardsToCheck[i] != playerTwoHand[2].value && cardsToCheck[i] != playerTwoHand[3].value){
+               count = count + 1;
+            }
+        }
+      }
+        if(count == 4){
+
+          flipSideDeckCard(cardPileOne, cardPileTwo, sparePileOne, sparePileTwo);
+          //console.log("New Cards Are: " + cardsPileOne);
+          for (var i in SOCKET_LIST){
+            SOCKET_LIST[i].emit('decksUpdated', {pileOne: sparePileOne, pileTwo: sparePileTwo,
+              pOneHand: playerOneHand, pTwoHand: playerTwoHand, pOneDeck: playerOneDeck, pTwoDeck: playerTwoDeck, cardPileO: cardPileOne, cardPileT: cardPileTwo});
+          }
+          count = 0;
+        }
+        else{
+          socket.emit('addToChat', "GAME: There Are Still Cards That Can Be Played!")
+        }
+ });
+
+ function flipSideDeckCard(cardPOne, cardPTwo, sparePileO, sparePileT) {
+
+   var cardOne;
+   var cardTwo;
+
+ if(sparePileO.length > 0){
+   cardOne = sparePileO.pop();
+   cardTwo = sparePileT.pop();
+
+   cardPOne[0] = cardOne;
+   cardPTwo[0]= cardTwo;
+   }
+   else {
+     socket.emit('addToChat', "GAME: There Are No Cards Left In The Side Deck!")
+   }
+ }
+
   function checkPlayedCard(chosenCard, chosenCardPile, handPos, pileNo, playerNum) {
       var xPos;
       var yPos;
@@ -229,42 +266,11 @@ io.sockets.on('connection', function(socket){
       var cardHolder;
 
     if (chosenCardPile[chosenCardPile.length - 1].value + 1 == chosenCard.value || chosenCardPile[chosenCardPile.length - 1].value - 1 == chosenCard.value) {
-      switch (handPos) {
-        case 1:
-          xPos = 270;
-          yPos = 530;
-          break;
-        case 2:
-          xPos = 460;
-          yPos = 530;
-          break;
-        case 3:
-          xPos = 650;
-          yPos = 530;
-          break;
-        case 4:
-          xPos = 840;
-          yPos = 530;
-          break;
-      }
-      switch (pileNo) {
-        case 1:
-          xPilePos = 460;
-          yPilePos = 279;
-          break;
-        case 2:
-          xPilePos = 650;
-          yPilePos = 279;
-          break;
-      }
-
       if(playerNum == 0){
         cardHolder = playerOneHand.splice(handPos- 1, 1);
-        //console.log("Just Player Card With Value Of : "+ cardHolder[0].value);
       }
       if(playerNum == 1){
         cardHolder = playerTwoHand.splice(handPos - 1, 1);
-        //console.log("Just Player Card With Value Of : "+ cardHolder[0].value);
       }
       if(pileNo == 1){
         cardPileOne[0] = cardHolder[0];
@@ -274,23 +280,16 @@ io.sockets.on('connection', function(socket){
       }
       if(playerNum == 0){
         cardHolder = playerOneDeck.pop();
-        //console.log("cardHolderValue = " + cardHolder.value);
         playerOneHand[3] = cardHolder;
-        //console.log(playerOneHand[2]);
-        //console.log(playerOneHand[3]);
       }
       if(playerNum == 1){
         cardHolder = playerTwoDeck.pop();
-      //  console.log("cardHolderValue = " + cardHolder.value);
         playerTwoHand[3] = cardHolder;
-        //console.log(playerOneHand[2]);
-        //console.log(playerTwoHand[3]);
       }
       for (var i in SOCKET_LIST){
         SOCKET_LIST[i].emit('decksUpdated', {pileOne: sparePileOne, pileTwo: sparePileTwo,
           pOneHand: playerOneHand, pTwoHand: playerTwoHand, pOneDeck: playerOneDeck, pTwoDeck: playerTwoDeck, cardPileO: cardPileOne, cardPileT: cardPileTwo});
       }
-      socket.emit('playCardResponse', {cardX: xPos, cardY: yPos, pileX: xPilePos, pileY: yPilePos, cardPile : chosenCardPile, handPosition: handPos});
     }
     else {
       socket.emit('addToChat', "GAME: You Cannot Play That Card!")
@@ -314,6 +313,7 @@ io.sockets.on('connection', function(socket){
         SOCKET_LIST[i].emit('deckCreated', {pileOne: sparePileOne, pileTwo: sparePileTwo,
           pOneHand: playerOneHand, pTwoHand: playerTwoHand, pOneDeck: playerOneDeck, pTwoDeck: playerTwoDeck, cardPileO: cardPileOne, cardPileT: cardPileTwo});
       }
+      beginChecks = true;
     }
     else {
       console.log("Not Enough Players Present To Start Game!" + " " + numPlayers);
@@ -358,6 +358,7 @@ setInterval(function(){
 }
     for (var i in SOCKET_LIST) {
       var socket = SOCKET_LIST[i];
-      socket.emit('newPosition', pack);
+if (beginChecks == true)
+    socket.emit('newPosition', pack);
     }
   },1000/25);
