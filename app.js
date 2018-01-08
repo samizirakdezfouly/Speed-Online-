@@ -1,8 +1,6 @@
 //Confirmation that the server is up and running correctly//
 console.log("'Speed Online!' is up and running");
 
-
-require('./SpeedRuleEngine');
 require('./Deck');
 require('./client/js/GameCanvasGenerator');
 require('./Player');
