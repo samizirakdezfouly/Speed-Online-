@@ -106,7 +106,7 @@ var chatInput = document.getElementById('chat-input');
 var chatForm = document.getElementById('chat-form');
 speedGameCanvas = document.getElementById('speedGameCanvas').getContext("2d");
 startGameButton = document.getElementById('startGame');
-flipSideDeckButton = document.getElementById('flipSideDeckBut').disabled = true;
+flipSideDeckButton = document.getElementById('flipSideDeckBut');
 
 startGameButton.addEventListener('click', function(){
   socket.emit('gameStart',{startGame: true});
@@ -270,5 +270,5 @@ function checkCard(card, pile, valOne, valTwo, playerNumber){
 }
 
 loadGameBackground();
-
+flipSideDeckButton.disabled = true;
 </script>
