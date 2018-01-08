@@ -101,16 +101,10 @@ function secondPlayerPlayState(data) {
 
   loadImages(cardsPileOneImgs, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 100, 279.25, 125, 181.5);
-    speedGameCanvas.drawImage(images.cardTwo, 100, 279.25, 125, 181.5);
-    speedGameCanvas.drawImage(images.cardThree, 100, 279.25, 125, 181.5);
-    //speedGameCanvas.drawImage(images.cardFour, 100, 299.25, 125, 181.5);
   });
 
   loadImages(cardsPileTwoImgs, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 1055, 279.25, 125, 181.5);
-    speedGameCanvas.drawImage(images.cardTwo, 1055, 279.25, 125, 181.5);
-    speedGameCanvas.drawImage(images.cardThree, 1055, 279.25, 125, 181.5);
-    //speedGameCanvas.drawImage(images.cardFour, 1055, 299.25, 125, 181.5);
   });
 
   loadImages(playerOneCards, function(images) {
