@@ -70,7 +70,7 @@ var isUsernameTaken = function(data, callback){
 var addUser = function(data, callback){
   speedOnlineDb.accounts.insert({username:data.username, password:data.password},function(err){
     speedOnlineDb.skillLvls.insert({username: data.username, skillLvl: 0},function(err){
-      calllback();
+      callback();
     });
   });
 }
