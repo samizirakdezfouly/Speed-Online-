@@ -106,7 +106,7 @@ var chatInput = document.getElementById('chat-input');
 var chatForm = document.getElementById('chat-form');
 speedGameCanvas = document.getElementById('speedGameCanvas').getContext("2d");
 startGameButton = document.getElementById('startGame');
-flipSideDeckButton = document.getElementById('flipSideDeckBut');
+flipSideDeckButton = document.getElementById('flipSideDeckBut').disabled = true;
 
 startGameButton.addEventListener('click', function(){
   socket.emit('gameStart',{startGame: true});
@@ -161,6 +161,8 @@ socket.on('deckCreated',function(data){
     firstPlayerPlayState(data);
   if(playerNum == 1)
     secondPlayerPlayState(data);
+  startGameButton.disabled = true;
+  flipSideDeckButton.disabled = false;
 });
 
 document.onkeydown = function(event){
