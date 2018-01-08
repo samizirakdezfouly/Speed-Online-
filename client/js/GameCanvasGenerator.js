@@ -144,7 +144,6 @@ function loadImages(sources, callback) {
   var images = {};
   var loadedImages = 0;
   var numImages = 0;
-  // get num of sources
   for (var src in sources) {
     numImages++;
   }

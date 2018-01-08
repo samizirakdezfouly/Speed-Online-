@@ -71,11 +71,10 @@ var isUsernameTaken = function(data, callback){
 //Inserts a new signed up users information into the Database.
 var addUser = function(data, callback){
   speedOnlineDb.accounts.insert({username:data.username, password:data.password},function(err){
-    callback();
+    speedOnlineDb.skillLvls.insert({username: data.username, skillLvl: 0},function(err){
+      calllback();
+    });
   });
-  speedOnlineDb.skillLvls.insert({username: data.username, skillLvl: 0},function(err){
-    callback();
-  })
 }
 
 //When a player connects they are assigned a random id and that player is then
@@ -123,7 +122,6 @@ io.sockets.on('connection', function(socket){
         if(count == 4){
 
           flipSideDeckCard(cardPileOne, cardPileTwo, sparePileOne, sparePileTwo);
-          //console.log("New Cards Are: " + cardsPileOne);
           for (var i in SOCKET_LIST){
             SOCKET_LIST[i].emit('decksUpdated', {pileOne: sparePileOne, pileTwo: sparePileTwo,
               pOneHand: playerOneHand, pTwoHand: playerTwoHand, pOneDeck: playerOneDeck, pTwoDeck: playerTwoDeck, cardPileO: cardPileOne, cardPileT: cardPileTwo});
@@ -196,7 +194,6 @@ io.sockets.on('connection', function(socket){
     speedOnlineDb.skillLvls.find({username: data.username}, function(err, res){
       if (res.length > 0) {
         console.log(res[0].skillLvl);
-        //skillLvlHolder = res[0].skillLvl;
         socket.emit('getSkill', {skillLvl: res[0].skillLvl});
       }
     });
@@ -245,7 +242,7 @@ io.sockets.on('connection', function(socket){
 
 //Main loop of the game begins here - calls Player.update()
 //When player pack from Player.update is recieved it emits the pack and updates
-//all of the players positions for everyone by sending them to the clients and
+//all of the players card positions for everyone by sending them to the clients and
 //updating their canavs.
 setInterval(function(){
   var pack = {

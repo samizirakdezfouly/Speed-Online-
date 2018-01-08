@@ -117,7 +117,6 @@ cardDeck = function() {
       mainDeck[randomCard] = tempCardSlot;
     }
     for (var z = 0; z < mainDeck.length; z++) {
-      //console.log("Shuffled Card Was: " + mainDeck[z].cardType + " of " + mainDeck[z].suitName);
     }
   }
 
@@ -152,25 +151,17 @@ cardDeck = function() {
       playerTwoHand[i] = drawCards(1);
       sparePileOne[i] = drawCards(1);
       sparePileTwo[i] = drawCards(1);
-      //console.log("Player One's Card Number " + i + " is: " + playerOneHand[i].cardType + " of " + playerOneHand[i].suitName);
-      //console.log("Player Two's Card Number " + i + " is: " + playerTwoHand[i].cardType + " of " + playerTwoHand[i].suitName);
-      //console.log("sparePileOnes One's Card Number " + i + " is: " + sparePileOne[i].cardType + " of " + sparePileOne[i].suitName);
-      //console.log("sparePileTwos Card Number " + i + " is: " + sparePileTwo[i].cardType + " of " + sparePileTwo[i].suitName);
-      //console.log("Value = " + sparePileOne[i].value);
     }
 
     for (var i = 0; i < 18; i++) {
       playerOneDeck[i] = drawCards(1);
       playerTwoDeck[i] = drawCards(1);
-      //  console.log("Player One's Card DECK Number " + i + " is: " + playerOneDeck[i].cardType + " of " + playerOneDeck[i].suitName);
-      //console.log("Player Two's Card DECK Number " + i + " is: " + playerTwoDeck[i].cardType + " of " + playerTwoDeck[i].suitName);
     }
   }
 
   var readyDeck = function() {
     generateDeck();
     shuffleDeck();
-    //testCardLocations();
     prepGame();
   }
 
