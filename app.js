@@ -22,7 +22,7 @@ sparePileOne = [];
 sparePileTwo = [];
 cardPileOne = [];
 cardPileTwo = [];
-var numPlayers = 0;
+numPlayers = 0;
 var generateDeck = new cardDeck();
 var skillLvlHolder;
 var beginChecks = false;
