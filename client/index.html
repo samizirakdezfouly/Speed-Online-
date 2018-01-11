@@ -1,28 +1,44 @@
+<!DOCTYPE html>
+<html>
+<title>Speed! Online</title>
 
-<div id="signDiv">
-  Username: <input id="signDiv-username" type="text"></input><br>
-  Password: <input id="signDiv-password" type="password"></input><br>
-  <button id="signDiv-signIn">Sign In</button>
-  <button id="signDiv-signUp">Sign Up</button>
-</div>
-
-<div id="gameDiv" style="display:none;">
-  <canvas id="speedGameCanvas" width="1280" height="720"
-    style="border: 1px solid #000000;"></canvas>
-
-  <div id="chat-text" style="width: 500px; height: 100px; overflow-y:scroll">
-
-  </div>
-
-  <form id="chat-form">
-    <input id="chat-input" type="text" style="width: 500px"></input><br>
-  </form>
-  <div>
-    <button id="startGame">Start Game!</button> <button id="flipSideDeckBut">Flip Side Deck!</button>
-  </div>
-</div>
 <head>
+  <link rel="stylesheet" type="text/css" href="\client\css\style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <script src="/socket.io/socket.io.js"></script>
   <script src="/client/js/GameCanvasGenerator.js"></script>
   <script type="text/javascript" src="/client/js/Socket.js"></script>
 </head>
+
+<body>
+  <div id="signDiv">
+    <h1> Login or Sign Up!</h1>
+    <p>Username</p>
+    <input id="signDiv-username" type="text" placeholder="Enter your Username"></input>
+    <br>
+    <p>Password</p>
+    <input id="signDiv-password" type="password" placeholder="Enter your Password"></input>
+    <br>
+    <button id="signDiv-signIn">Sign In</button>
+    <br>
+    <br>
+    <button id="signDiv-signUp">Sign Up</button>
+  </div>
+
+  <div id="gameDiv" style="display:none;">
+    <canvas id="speedGameCanvas" width="1280" height="720" style="border: 1px solid #000000;"></canvas>
+
+    <div id="chat-text" style="width: 500px; height: 100px; overflow-y:scroll">
+
+    </div>
+
+    <form id="chat-form">
+      <input id="chat-input" type="text" style="width: 500px"></input><br>
+    </form>
+    <div>
+      <button id="startGame">Start Game!</button> <button id="flipSideDeckBut">Flip Side Deck!</button>
+    </div>
+  </div>
+</body>
+
+</html>
