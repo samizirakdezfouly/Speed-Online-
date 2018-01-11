@@ -206,6 +206,7 @@ io.sockets.on('connection', function(socket){
       for (var i in SOCKET_LIST){
         SOCKET_LIST[i].emit('deckCreated', {pileOne: sparePileOne, pileTwo: sparePileTwo,
           pOneHand: playerOneHand, pTwoHand: playerTwoHand, pOneDeck: playerOneDeck, pTwoDeck: playerTwoDeck, cardPileO: cardPileOne, cardPileT: cardPileTwo});
+        SOCKET_LIST[i].emit('inputsActive', {inputs: true});
       }
       beginChecks = true;
     }
