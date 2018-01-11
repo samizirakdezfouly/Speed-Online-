@@ -98,7 +98,7 @@ io.sockets.on('connection', function(socket){
       });
   });
 
-  socket.on("checkIfStaleMate", function(){
+  socket.on("checkIfStaleMate", function(data){
     var count = 0;
     var cardsToCheck = [
       cardPileOne[0].value +1,
@@ -110,24 +110,27 @@ io.sockets.on('connection', function(socket){
       for(var i = 0; i < cardsToCheck.length; i++){
         if(cardsToCheck[i] != playerOneHand[0].value && cardsToCheck[i] != playerOneHand[1].value
           && cardsToCheck[i] != playerOneHand[2].value && cardsToCheck[i] != playerOneHand[3].value){
-
+                count = count + 0.5;
             if(cardsToCheck[i] != playerTwoHand[0].value && cardsToCheck[i] != playerTwoHand[1].value
               && cardsToCheck[i] != playerTwoHand[2].value && cardsToCheck[i] != playerTwoHand[3].value){
-               count = count + 1;
+               count = count + 0.5;
             }
         }
       }
+        console.log(count);
         if(count == 4){
+          if(data.isLocalArrayEmpty == false)
+            flipSideDeckCard(cardPileOne, cardPileTwo, sparePileOne, sparePileTwo);
 
-          flipSideDeckCard(cardPileOne, cardPileTwo, sparePileOne, sparePileTwo);
-          for (var i in SOCKET_LIST){
+            for (var i in SOCKET_LIST){
             SOCKET_LIST[i].emit('decksUpdated', {pileOne: sparePileOne, pileTwo: sparePileTwo,
               pOneHand: playerOneHand, pTwoHand: playerTwoHand, pOneDeck: playerOneDeck, pTwoDeck: playerTwoDeck, cardPileO: cardPileOne, cardPileT: cardPileTwo});
           }
           count = 0;
         }
         else{
-          socket.emit('addToChat', "GAME: There Are Still Cards That Can Be Played!")
+          socket.emit('addToChat', "GAME: There Are Still Cards That Can Be Played! " + sparePileOne.length);
+          count = 0;
         }
  });
 
@@ -184,7 +187,7 @@ io.sockets.on('connection', function(socket){
       }
     }
     else {
-      socket.emit('addToChat', "GAME: You Cannot Play That Card!")
+      socket.emit('addToChat', "GAME: You Cannot Play That Card! " + playerOneDeck.length + " " + playerTwoDeck.length);
     }
   }
 

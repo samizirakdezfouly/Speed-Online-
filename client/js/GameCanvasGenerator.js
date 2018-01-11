@@ -1,28 +1,61 @@
 function firstPlayerPlayState(data) {
+  var switchBool = false;
+  var cardFourGone = false;
+  var cardThreeGone = false;
+  var cardTwoGone = false;
+  var cardOneGone = false;
+
+  var enemyCardFourGone = false;
+  var enemyCardThreeGone = false;
+  var enemyCardTwoGone = false;
+  var enemyCardOneGone = false;
+
+  var sideDeckGoneImg = "/client/img/empty_side_deck.png";
+  var emptyHandSlotImg = "/client/img/hand_slot_empty.png";
+
   speedGameCanvas.fillText(loggedInPlayerName, 20, 550);
   speedGameCanvas.fillText("Skill Level: " + loggedInPlayerSkillLvl, 20, 575);
 
+  if(data.pileOne.length == 0)
+    switchBool = true;
+  if(data.pOneHand.length == 3)
+    cardFourGone = true;
+  if(data.pOneHand.length == 2)
+    cardThreeGone = true;
+  if(data.pOneHand.length == 1)
+    cardTwoGone = true;
+  if(data.pOneHand.length == 0)
+    cardOneGone = true;
+  if(data.pTwoHand.length == 3)
+    enemyCardFourGone = true;
+  if(data.pTwoHand.length == 2)
+    enemyCardThreeGone = true;
+  if(data.pTwoHand.length == 1)
+    enemyCardTwoGone = true;
+  if(data.pTwoHand.length == 0)
+    enemyCardOneGone = true;
+
   cardsPileOne = {
-    cardOne: data.pileOne[0].cardBackground,
+    cardOne: switchBool ? sideDeckGoneImg : data.pileOne[0].cardBackground
   };
 
   cardsPileTwo = {
-    cardOne: data.pileTwo[0].cardBackground,
+    cardOne: switchBool ? sideDeckGoneImg : data.pileTwo[0].cardBackground
   };
 
   playerOneCards = {
-    handCardOne: data.pOneHand[0].cardPicture,
-    handCardTwo: data.pOneHand[1].cardPicture,
-    handCardThree: data.pOneHand[2].cardPicture,
-    handCardFour: data.pOneHand[3].cardPicture
+    handCardOne: cardOneGone ? emptyHandSlotImg : data.pOneHand[0].cardPicture,
+    handCardTwo: cardTwoGone ? emptyHandSlotImg : data.pOneHand[1].cardPicture,
+    handCardThree: cardThreeGone ? emptyHandSlotImg : data.pOneHand[2].cardPicture,
+    handCardFour: cardFourGone ? emptyHandSlotImg : data.pOneHand[3].cardPicture
   };
 
   playerTwoCards = {
-    handCardOne: data.pTwoHand[0].cardBackground,
-    handCardTwo: data.pTwoHand[1].cardBackground,
-    handCardThree: data.pTwoHand[2].cardBackground,
-    handCardFour: data.pTwoHand[3].cardBackground
-  };
+    handCardOne: enemyCardOneGone ? emptyHandSlotImg : data.pTwoHand[0].cardBackground,
+    handCardTwo: enemyCardTwoGone ? emptyHandSlotImg : data.pTwoHand[1].cardBackground,
+    handCardThree: enemyCardThreeGone ? emptyHandSlotImg : data.pTwoHand[2].cardBackground,
+    handCardFour: enemyCardFourGone ? emptyHandSlotImg : data.pTwoHand[3].cardBackground
+};
 
   discardPileOne = {
     zero : data.cardPileO[0].cardPicture
@@ -66,29 +99,62 @@ function firstPlayerPlayState(data) {
 }
 
 function secondPlayerPlayState(data) {
+  var switchBool = false;
+  var cardFourGone = false;
+  var cardThreeGone = false;
+  var cardTwoGone = false;
+  var cardOneGone = false;
+
+  var enemyCardFourGone = false;
+  var enemyCardThreeGone = false;
+  var enemyCardTwoGone = false;
+  var enemyCardOneGone = false;
+
+  var sideDeckGoneImg = "/client/img/empty_side_deck.png";
+  var emptyHandSlotImg = "/client/img/hand_slot_empty.png";
+
   speedGameCanvas.fillText(loggedInPlayerName, 20, 550);
   speedGameCanvas.fillText("Skill Level: " + loggedInPlayerSkillLvl, 20, 575);
 
-  cardsPileOneImgs = {
-    cardOne: data.pileOne[0].cardBackground,
+  if(data.pileOne.length == 0)
+    switchBool = true;
+  if(data.pOneHand.length == 3)
+    cardFourGone = true;
+  if(data.pOneHand.length == 2)
+    cardThreeGone = true;
+  if(data.pOneHand.length == 1)
+    cardTwoGone = true;
+  if(data.pOneHand.length == 0)
+    cardOneGone = true;
+  if(data.pTwoHand.length == 3)
+    enemyCardFourGone = true;
+  if(data.pTwoHand.length == 2)
+    enemyCardThreeGone = true;
+  if(data.pTwoHand.length == 1)
+    enemyCardTwoGone = true;
+  if(data.pTwoHand.length == 0)
+    enemyCardOneGone = true;
+
+  cardsPileOne = {
+    cardOne: switchBool ? sideDeckGoneImg : data.pileOne[0].cardBackground
   };
 
-  cardsPileTwoImgs = {
-    cardOne: data.pileTwo[0].cardBackground,
+  cardsPileTwo = {
+    cardOne: switchBool ? sideDeckGoneImg : data.pileTwo[0].cardBackground
   };
 
   playerOneCards = {
-    handCardOne: data.pOneHand[0].cardBackground,
-    handCardTwo: data.pOneHand[1].cardBackground,
-    handCardThree: data.pOneHand[2].cardBackground,
-    handCardFour: data.pOneHand[3].cardBackground
+    handCardOne: cardOneGone ? emptyHandSlotImg : data.pOneHand[0].cardBackground,
+    handCardTwo: cardTwoGone ? emptyHandSlotImg : data.pOneHand[1].cardBackground,
+    handCardThree: cardThreeGone ? emptyHandSlotImg : data.pOneHand[2].cardBackground,
+    handCardFour: cardFourGone ? emptyHandSlotImg : data.pOneHand[3].cardBackground
   };
 
   playerTwoCards = {
-    handCardOne: data.pTwoHand[0].cardPicture,
-    handCardTwo: data.pTwoHand[1].cardPicture,
-    handCardThree: data.pTwoHand[2].cardPicture,
-    handCardFour: data.pTwoHand[3].cardPicture
+    handCardOne: enemyCardOneGone ? emptyHandSlotImg : data.pTwoHand[0].cardPicture,
+    handCardTwo: enemyCardTwoGone ? emptyHandSlotImg : data.pTwoHand[1].cardPicture,
+    handCardThree: enemyCardThreeGone ? emptyHandSlotImg : data.pTwoHand[2].cardPicture,
+    handCardFour: enemyCardFourGone ? emptyHandSlotImg : data.pTwoHand[3].cardPicture
   };
 
   discardPileOne = {
@@ -99,11 +165,11 @@ function secondPlayerPlayState(data) {
     zero: data.cardPileT[0].cardPicture
   };
 
-  loadImages(cardsPileOneImgs, function(images) {
+  loadImages(cardsPileOne, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 100, 279.25, 125, 181.5);
   });
 
-  loadImages(cardsPileTwoImgs, function(images) {
+  loadImages(cardsPileTwo, function(images) {
     speedGameCanvas.drawImage(images.cardOne, 1055, 279.25, 125, 181.5);
   });
 

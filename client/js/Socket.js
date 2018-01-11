@@ -21,6 +21,7 @@ playerTwoCardsArray = [];
 cardsPileOneArray = [];
 cardsPileTwoArray = [];
 var playerNum;
+var cardsInHand;
 
 keyCombos = {
   one : false,
@@ -30,8 +31,6 @@ keyCombos = {
   e : false,
   r : false
 }
-
-
 //Sign In
 var signDiv = document.getElementById('signDiv');
 var gameDiv = document.getElementById('gameDiv');
@@ -85,7 +84,12 @@ startGameButton.addEventListener('click', function(){
 });
 
 flipSideDeckButton.addEventListener('click', function(){
-  socket.emit("checkIfStaleMate");
+  if(spareCardsPileOneArray.length > 0){
+    socket.emit("checkIfStaleMate", {isLocalArrayEmpty : false});
+  }else{
+    console.log("No Pile Cards Left");
+    socket.emit("checkIfStaleMate", {isLocalArrayEmpty: true});
+  }
 });
 
 speedGameCanvas.font = '20px Arial';
@@ -125,6 +129,8 @@ socket.on('decksUpdated', function(data){
     firstPlayerPlayState(data);
   if(playerNum == 1)
     secondPlayerPlayState(data);
+  if(data.pileOne.length == 0)
+    flipSideDeckButton.disabled = true;
 });
 
 socket.on('deckCreated',function(data){
@@ -135,6 +141,7 @@ socket.on('deckCreated',function(data){
     secondPlayerPlayState(data);
   startGameButton.disabled = true;
   flipSideDeckButton.disabled = false;
+
 });
 
 document.onkeydown = function(event){
