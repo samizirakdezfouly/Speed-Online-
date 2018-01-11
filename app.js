@@ -93,7 +93,7 @@ io.sockets.on('connection', function(socket){
               console.log(numPlayers);
               socket.emit('signInResponse',{success:true, numberOfPlayers: numPlayers});
           } else {
-              socket.emit('signInResponse',{success:false});
+              socket.emit('signInResponse',{success:false, numberOfPlayers : numPlayers});
           }
       });
   });

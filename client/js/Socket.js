@@ -86,16 +86,20 @@ window.onload = function(){
       playerNum = data.numberOfPlayers;
       signDiv.style.display = 'none';
       gameDiv.style.display = 'inline-block';
-    } else {
-      alert("Sign In Unsuccessful");
     }
+    else if (data.success == false && data.numberOfPlayers <= 2)
+      alert("The game is currently full! Try logging in later!");
+    else if (data.success == false)
+      alert("Sign In Unsuccessful! Check that you have entered your username and password correctly!");
+
+
   });
 
   socket.on('signUpResponse', function(data){
     if (data.success) {
-      alert("Sign Up Sucessful")
+      alert("Sign Up Sucessful! You may now Log In!")
     } else {
-      alert("Sign Up Unsuccessful");
+      alert("Sign Up Unsuccessful, Another user exists with the same username!");
     }
   });
 
