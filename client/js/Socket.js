@@ -87,7 +87,7 @@ window.onload = function(){
       signDiv.style.display = 'none';
       gameDiv.style.display = 'inline-block';
     }
-    else if (data.success == false && data.numberOfPlayers <= 2)
+    else if (data.success == false && data.numberOfPlayers >= 2)
       alert("The game is currently full! Try logging in later!");
     else if (data.success == false)
       alert("Sign In Unsuccessful! Check that you have entered your username and password correctly!");
