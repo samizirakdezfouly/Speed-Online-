@@ -16,23 +16,23 @@ function firstPlayerPlayState(data) {
   speedGameCanvas.fillText(loggedInPlayerName, 20, 550);
   speedGameCanvas.fillText("Skill Level: " + loggedInPlayerSkillLvl, 20, 575);
 
-  if(data.pileOne.length == 0)
+  if (data.pileOne.length == 0)
     switchBool = true;
-  if(data.pOneHand.length == 3)
+  if (data.pOneHand.length == 3)
     cardFourGone = true;
-  if(data.pOneHand.length == 2)
+  if (data.pOneHand.length == 2)
     cardThreeGone = true;
-  if(data.pOneHand.length == 1)
+  if (data.pOneHand.length == 1)
     cardTwoGone = true;
-  if(data.pOneHand.length == 0)
+  if (data.pOneHand.length == 0)
     cardOneGone = true;
-  if(data.pTwoHand.length == 3)
+  if (data.pTwoHand.length == 3)
     enemyCardFourGone = true;
-  if(data.pTwoHand.length == 2)
+  if (data.pTwoHand.length == 2)
     enemyCardThreeGone = true;
-  if(data.pTwoHand.length == 1)
+  if (data.pTwoHand.length == 1)
     enemyCardTwoGone = true;
-  if(data.pTwoHand.length == 0)
+  if (data.pTwoHand.length == 0)
     enemyCardOneGone = true;
 
   cardsPileOne = {
@@ -55,14 +55,14 @@ function firstPlayerPlayState(data) {
     handCardTwo: enemyCardTwoGone ? emptyHandSlotImg : data.pTwoHand[1].cardBackground,
     handCardThree: enemyCardThreeGone ? emptyHandSlotImg : data.pTwoHand[2].cardBackground,
     handCardFour: enemyCardFourGone ? emptyHandSlotImg : data.pTwoHand[3].cardBackground
-};
+  };
 
   discardPileOne = {
-    zero : data.cardPileO[0].cardPicture
+    zero: data.cardPileO[0].cardPicture
   };
 
   discardPileTwo = {
-    zero : data.cardPileT[0].cardPicture
+    zero: data.cardPileT[0].cardPicture
   };
 
   loadImages(cardsPileOne, function(images) {
@@ -116,23 +116,23 @@ function secondPlayerPlayState(data) {
   speedGameCanvas.fillText(loggedInPlayerName, 20, 550);
   speedGameCanvas.fillText("Skill Level: " + loggedInPlayerSkillLvl, 20, 575);
 
-  if(data.pileOne.length == 0)
+  if (data.pileOne.length == 0)
     switchBool = true;
-  if(data.pOneHand.length == 3)
+  if (data.pOneHand.length == 3)
     cardFourGone = true;
-  if(data.pOneHand.length == 2)
+  if (data.pOneHand.length == 2)
     cardThreeGone = true;
-  if(data.pOneHand.length == 1)
+  if (data.pOneHand.length == 1)
     cardTwoGone = true;
-  if(data.pOneHand.length == 0)
+  if (data.pOneHand.length == 0)
     cardOneGone = true;
-  if(data.pTwoHand.length == 3)
+  if (data.pTwoHand.length == 3)
     enemyCardFourGone = true;
-  if(data.pTwoHand.length == 2)
+  if (data.pTwoHand.length == 2)
     enemyCardThreeGone = true;
-  if(data.pTwoHand.length == 1)
+  if (data.pTwoHand.length == 1)
     enemyCardTwoGone = true;
-  if(data.pTwoHand.length == 0)
+  if (data.pTwoHand.length == 0)
     enemyCardOneGone = true;
 
   cardsPileOne = {
@@ -158,7 +158,7 @@ function secondPlayerPlayState(data) {
   };
 
   discardPileOne = {
-    zero : data.cardPileO[0].cardPicture
+    zero: data.cardPileO[0].cardPicture
   };
 
   discardPileTwo = {
