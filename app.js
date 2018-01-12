@@ -129,7 +129,7 @@ io.sockets.on('connection', function(socket){
           count = 0;
         }
         else{
-          socket.emit('addToChat', "GAME: There Are Still Cards That Can Be Played! " + sparePileOne.length);
+          socket.emit('addToChat', "GAME: There Are Still Cards That Can Be Played!");
           count = 0;
         }
  });
@@ -187,7 +187,7 @@ io.sockets.on('connection', function(socket){
       }
     }
     else {
-      socket.emit('addToChat', "GAME: You Cannot Play That Card! " + playerOneDeck.length + " " + playerTwoDeck.length);
+      socket.emit('addToChat', "GAME: You Cannot Play That Card!");
     }
   }
 
